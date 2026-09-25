@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+namespace Project.Scripts
 {
-    public Transform target;         // сюда перетащить Player
-    public float smoothTime = 0.15f; // чем меньше, тем резче камера догоняет
-    public Vector3 offset = new Vector3(0f, 1f, -10f); // -10 по Z обязательно для 2D
-
-    private Vector3 velocity = Vector3.zero;
-
-    void LateUpdate()
+    public class CameraFollow : MonoBehaviour
     {
-        if (target == null) return;
+        public Transform target;         // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Player
+        public float smoothTime = 0.15f; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public Vector3 offset = new(0f, 1f, -10f); // -10 пїЅпїЅ Z пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ 2D
 
-        Vector3 desiredPosition = target.position + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+        private Vector3 velocity = Vector3.zero;
+
+        void LateUpdate()
+        {
+            if (!target) return;
+
+            Vector3 desiredPosition = target.position + offset;
+            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+        }
     }
 }
