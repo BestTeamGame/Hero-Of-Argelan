@@ -1,120 +1,192 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+namespace Project.Scripts
 {
-    [Header("Movement")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 12f;
-
-    [Header("Ground Check")]
-    public Transform groundCheck;      // пустой объект у ног персонажа
-    public float groundCheckRadius = 0.15f;
-    public LayerMask groundLayer;      // сюда назначить слой terrain/земли
-
-    [Header("Attack")]
-    public Transform attackPoint;      // пустой объект перед персонажем
-    public float attackRange = 0.6f;
-    public LayerMask enemyLayer;       // сюда назначить слой врагов
-    public float attackCooldown = 0.5f;
-
-    private Rigidbody2D rb;
-    private SpriteRenderer sr;
-    private Animator animator;
-    private bool isGrounded;
-    private bool facingRight = true;
-    private float moveInput;
-    private float lastAttackTime = -Mathf.Infinity;
-
-    void Awake()
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class PlayerController : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>(); // может быть null, если Animator ещё не добавлен — это ок
-    }
+        private static readonly int Speed = Animator.StringToHash("Speed");
+        private static readonly int Attack1 = Animator.StringToHash("Attack");
 
-    void Update()
-    {
-        // Считываем ввод в Update (это привязано к кадрам, а не к физике)
-        moveInput = Input.GetAxisRaw("Horizontal"); // A/D или стрелки, -1..0..1
+        [Header("Movement")]
+        public float moveSpeed = 5f;
+        public float jumpForce = 12f;
 
-        // Проверяем, стоит ли персонаж на земле
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        [Header("Ground Check")]
+        public Transform groundCheck;      // пустой объект у ног персонажа
+        public float groundCheckRadius = 0.15f;
+        public LayerMask groundLayer;      // сюда назначить слой terrain/земли
 
-        // Прыжок по нажатию пробела, только если стоим на земле
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        [Header("Attack")]
+        public Transform attackPoint;      // пустой объект перед персонажем
+        public float attackRange = 0.6f;
+        public LayerMask enemyLayer;       // сюда назначить слой врагов
+        public float attackCooldown = 0.5f;
+        
+
+        private Rigidbody2D rb;
+        private SpriteRenderer sr;
+        private Animator animator;
+        private ContactFilter2D enemyFilter;
+        
+        private InputSystem_Actions input;
+        
+        private readonly Collider2D[] hitEnemies = new Collider2D[10];
+        
+        private bool jumpRequested;
+        private bool isGrounded;
+        private bool facingRight = true;
+        private float moveInput;
+        private float lastAttackTime = -Mathf.Infinity;
+
+        private void Awake()
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb = GetComponent<Rigidbody2D>();
+            sr = GetComponent<SpriteRenderer>();
+            animator = GetComponent<Animator>();
+            
+            input = new InputSystem_Actions();
+            
+            enemyFilter = new ContactFilter2D();
+            enemyFilter.SetLayerMask(enemyLayer);
+            enemyFilter.useLayerMask = true;
+        }
+        
+        private void OnEnable()
+        {
+            input.Player.Enable();
+
+            input.Player.Jump.performed += OnJump;
+            input.Player.Attack.performed += OnAttack;
         }
 
-        // Разворот спрайта в сторону движения
-        if (moveInput > 0f && !facingRight) Flip();
-        else if (moveInput < 0f && facingRight) Flip();
-
-        // Передаём скорость в Animator для переключения Idle/Walk
-        if (animator != null)
+        private void OnDisable()
         {
-            animator.SetFloat("Speed", Mathf.Abs(moveInput));
+            input.Player.Jump.performed -= OnJump;
+            input.Player.Attack.performed -= OnAttack;
+
+            input.Player.Disable();
+        }
+        
+        private void Update()
+        {
+            Vector2 move = input.Player.Move.ReadValue<Vector2>();
+            moveInput = move.x;
+
+            isGrounded = Physics2D.OverlapCircle(
+                groundCheck.position,
+                groundCheckRadius,
+                groundLayer
+            );
+
+            if (moveInput > 0f && !facingRight || moveInput < 0f && facingRight)
+            {
+                Flip();
+            }
+
+            if (animator)
+            {
+                animator.SetFloat(Speed, Mathf.Abs(moveInput));
+            }
+        }
+        
+        private void FixedUpdate()
+        {
+            isGrounded = Physics2D.OverlapCircle(
+                groundCheck.position,
+                groundCheckRadius,
+                groundLayer
+            );
+            
+            rb.linearVelocity = new Vector2(
+                moveInput * moveSpeed,
+                rb.linearVelocity.y
+            );
+            
+            if (jumpRequested && isGrounded)
+            {
+                rb.linearVelocity = new Vector2(
+                    rb.linearVelocity.x,
+                    jumpForce
+                );
+            }
+
+            jumpRequested = false;
+        }
+        
+        private void OnJump(InputAction.CallbackContext context)
+        {
+            jumpRequested = true;
         }
 
-        // Атака по левой кнопке мыши, с учётом кулдауна
-        if (Input.GetButtonDown("Fire1") && Time.time >= lastAttackTime + attackCooldown)
+        private void OnAttack(InputAction.CallbackContext context)
         {
+            if (Time.time < lastAttackTime + attackCooldown)
+                return;
+
             lastAttackTime = Time.time;
             Attack();
         }
-    }
 
-    void Flip()
-    {
-        facingRight = !facingRight;
-        sr.flipX = !facingRight;
-
-        // Точка атаки — дочерний объект, flipX на неё не действует, двигаем вручную
-        if (attackPoint != null)
+        private void Flip()
         {
+            facingRight = !facingRight;
+            sr.flipX = !facingRight;
+
+            if (!attackPoint) return;
             Vector3 pos = attackPoint.localPosition;
             pos.x = -pos.x;
             attackPoint.localPosition = pos;
         }
-    }
 
-    void Attack()
-    {
-        if (animator != null)
+        private void Attack()
         {
-            animator.SetTrigger("Attack");
+            if (animator != null)
+            {
+                animator.SetTrigger(Attack1);
+            }
+
+            if (attackPoint == null)
+                return;
+
+            int hitCount = Physics2D.OverlapCircle(
+                attackPoint.position,
+                attackRange,
+                enemyFilter,
+                hitEnemies
+            );
+            
+            for (int i = 0; i < hitCount; i++)
+            {
+                Collider2D enemy = hitEnemies[i];
+
+                Debug.Log("Ударили: " + enemy.name);
+
+                // Позже:
+                // enemy.GetComponent<EnemyHealth>()?.TakeDamage(damage);
+            }
         }
 
-        if (attackPoint == null) return;
-
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
-        foreach (Collider2D enemy in hitEnemies)
+        private void OnDrawGizmosSelected()
         {
-            Debug.Log("Ударили: " + enemy.name);
-            // Позже здесь будет: enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
-        }
-    }
+            if (groundCheck != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(
+                    groundCheck.position,
+                    groundCheckRadius
+                );
+            }
 
-    void FixedUpdate()
-    {
-        // Физику двигаем в FixedUpdate — это правильно для Rigidbody2D
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
-    }
-
-    // Визуализация зон в редакторе (удобно для отладки)
-    void OnDrawGizmosSelected()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-
-        if (attackPoint != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+            if (attackPoint != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(
+                    attackPoint.position,
+                    attackRange
+                );
+            }
         }
     }
 }
