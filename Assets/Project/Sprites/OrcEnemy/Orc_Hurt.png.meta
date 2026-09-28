@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: d1ac71d9209570445907fbf31de9df3c
+guid: 3bab746ffbb3ff04d8effed2374d07dd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8837730503579240587
-    second: Soldier_Death_0
+      213: -7183568614796697643
+    second: Orc_Hurt_0
   - first:
-      213: 2726879130252316194
-    second: Soldier_Death_1
+      213: -6658383062474771407
+    second: Orc_Hurt_1
   - first:
-      213: -8100786454920621681
-    second: Soldier_Death_2
+      213: -6996181481567200596
+    second: Orc_Hurt_2
   - first:
-      213: -3045238035382778172
-    second: Soldier_Death_3
+      213: -5674297547405555215
+    second: Orc_Hurt_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -60,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -86,7 +86,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -107,106 +107,93 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Soldier_Death_0
+      name: Orc_Hurt_0
       rect:
         serializedVersion: 2
-        x: 40
-        y: 39
-        width: 19
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 41
+        y: 42
+        width: 25
+        height: 17
+      alignment: 9
+      pivot: {x: 0.37345734, y: 0.13944648}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 57776896ee21a5580800000000000000
-      internalID: -8837730503579240587
+      spriteID: 5dfd56fa766de4c90800000000000000
+      internalID: -7183568614796697643
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier_Death_1
+      name: Orc_Hurt_1
       rect:
         serializedVersion: 2
-        x: 140
-        y: 39
-        width: 19
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 141
+        y: 42
+        width: 25
+        height: 17
+      alignment: 9
+      pivot: {x: 0.3774121, y: 0.1278157}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 22e8d101f12d7d520800000000000000
-      internalID: 2726879130252316194
+      spriteID: 134b6bed1eba893a0800000000000000
+      internalID: -6658383062474771407
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier_Death_2
+      name: Orc_Hurt_2
       rect:
         serializedVersion: 2
-        x: 244
-        y: 39
-        width: 18
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 241
+        y: 42
+        width: 25
+        height: 17
+      alignment: 9
+      pivot: {x: 0.3774121, y: 0.15107727}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f81192993a9349f80800000000000000
-      internalID: -8100786454920621681
+      spriteID: caa5507820298ee90800000000000000
+      internalID: -6996181481567200596
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier_Death_3
+      name: Orc_Hurt_3
       rect:
         serializedVersion: 2
-        x: 345
-        y: 39
-        width: 24
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 341
+        y: 42
+        width: 25
+        height: 17
+      alignment: 9
+      pivot: {x: 0.3774121, y: 0.1336311}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c6408424242db5d0800000000000000
-      internalID: -3045238035382778172
+      spriteID: 1f98501c178d041b0800000000000000
+      internalID: -5674297547405555215
       vertices: []
       indices: 
       edges: []
@@ -215,7 +202,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0133e3793a634b940bb9a656d19b421d
     internalID: 0
     vertices: []
     indices: 
@@ -225,10 +212,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Soldier_Death_0: -8837730503579240587
-      Soldier_Death_1: 2726879130252316194
-      Soldier_Death_2: -8100786454920621681
-      Soldier_Death_3: -3045238035382778172
+      Orc_Hurt_0: -7183568614796697643
+      Orc_Hurt_1: -6658383062474771407
+      Orc_Hurt_2: -6996181481567200596
+      Orc_Hurt_3: -5674297547405555215
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,31 +1,25 @@
 fileFormatVersion: 2
-guid: 15f6fbf9961f937419482e3d5f9781dd
+guid: e54791524f81df94eaf9930afc636c62
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4099682557227360808
-    second: Soldier_Attack02_0
+      213: -9150489477472823759
+    second: Orc_Idle_0
   - first:
-      213: 8225495098055431740
-    second: Soldier_Attack02_1
+      213: 542560960333195376
+    second: Orc_Idle_1
   - first:
-      213: -2676785311167784858
-    second: Soldier_Attack02_2
+      213: 3668920506500180977
+    second: Orc_Idle_2
   - first:
-      213: -485474084187396021
-    second: Soldier_Attack02_3
+      213: 4407846453197948913
+    second: Orc_Idle_3
   - first:
-      213: 919828676230503111
-    second: Soldier_Attack02_4
+      213: -662730461484591835
+    second: Orc_Idle_4
   - first:
-      213: 7541349493881095492
-    second: Soldier_Attack02_5
-  - first:
-      213: -9156718690140692374
-    second: Soldier_Attack02_6
-  - first:
-      213: -120481755975448847
-    second: Soldier_Attack02_7
+      213: -4627010983029706919
+    second: Orc_Idle_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -98,7 +92,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -119,194 +113,137 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Soldier_Attack02_0
+      name: Orc_Idle_0
       rect:
         serializedVersion: 2
-        x: 40
-        y: 39
-        width: 19
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 43
+        y: 42
+        width: 24
+        height: 17
+      alignment: 9
+      pivot: {x: 0.31508097, y: 0.10639774}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8dd199c6f600b17c0800000000000000
-      internalID: -4099682557227360808
+      spriteID: 13658463d4ee20180800000000000000
+      internalID: -9150489477472823759
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier_Attack02_1
-      rect:
-        serializedVersion: 2
-        x: 140
-        y: 46
-        width: 21
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c369f4d0634d62270800000000000000
-      internalID: 8225495098055431740
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier_Attack02_2
-      rect:
-        serializedVersion: 2
-        x: 242
-        y: 47
-        width: 20
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6685cd311f52adad0800000000000000
-      internalID: -2676785311167784858
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier_Attack02_3
-      rect:
-        serializedVersion: 2
-        x: 341
-        y: 39
-        width: 30
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b482a5084ef3349f0800000000000000
-      internalID: -485474084187396021
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier_Attack02_4
-      rect:
-        serializedVersion: 2
-        x: 441
-        y: 39
-        width: 30
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7cadfecbe43e3cc00800000000000000
-      internalID: 919828676230503111
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier_Attack02_5
-      rect:
-        serializedVersion: 2
-        x: 541
-        y: 39
-        width: 30
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 445cadda86148a860800000000000000
-      internalID: 7541349493881095492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier_Attack02_6
+      name: Orc_Idle_1
       rect:
         serializedVersion: 2
         x: 143
-        y: 39
-        width: 15
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        y: 42
+        width: 24
+        height: 17
+      alignment: 9
+      pivot: {x: 0.3207709, y: 0.10639774}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a60ebfd9ddccce080800000000000000
-      internalID: -9156718690140692374
+      spriteID: 078a7ad9150978700800000000000000
+      internalID: 542560960333195376
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier_Attack02_7
+      name: Orc_Idle_2
       rect:
         serializedVersion: 2
-        x: 245
-        y: 39
-        width: 15
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 243
+        y: 42
+        width: 24
+        height: 18
+      alignment: 9
+      pivot: {x: 0.32383093, y: 0.10362053}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1f60b253b76f35ef0800000000000000
-      internalID: -120481755975448847
+      spriteID: 1fbe61b03cf9ae230800000000000000
+      internalID: 3668920506500180977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Orc_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 42
+        width: 24
+        height: 18
+      alignment: 9
+      pivot: {x: 0.31669617, y: 0.09959242}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f74453def0db2d30800000000000000
+      internalID: 4407846453197948913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Orc_Idle_4
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 42
+        width: 24
+        height: 17
+      alignment: 9
+      pivot: {x: 0.32059732, y: 0.09806285}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 525516518228dc6f0800000000000000
+      internalID: -662730461484591835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Orc_Idle_5
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 42
+        width: 24
+        height: 17
+      alignment: 9
+      pivot: {x: 0.31279755, y: 0.10356881}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95feea0a60e89cfb0800000000000000
+      internalID: -4627010983029706919
       vertices: []
       indices: 
       edges: []
@@ -315,7 +252,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8c2cbeb9840a99445bb258cb5846dd03
     internalID: 0
     vertices: []
     indices: 
@@ -325,14 +262,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Soldier_Attack02_0: -4099682557227360808
-      Soldier_Attack02_1: 8225495098055431740
-      Soldier_Attack02_2: -2676785311167784858
-      Soldier_Attack02_3: -485474084187396021
-      Soldier_Attack02_4: 919828676230503111
-      Soldier_Attack02_5: 7541349493881095492
-      Soldier_Attack02_6: -9156718690140692374
-      Soldier_Attack02_7: -120481755975448847
+      Orc_Idle_0: -9150489477472823759
+      Orc_Idle_1: 542560960333195376
+      Orc_Idle_2: 3668920506500180977
+      Orc_Idle_3: 4407846453197948913
+      Orc_Idle_4: -662730461484591835
+      Orc_Idle_5: -4627010983029706919
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
