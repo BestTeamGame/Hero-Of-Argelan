@@ -1,16 +1,9 @@
 using UnityEngine;
 
-public class PlayerContext : MonoBehaviour
+namespace Project.Scripts.Player
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class PlayerContext : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // В будущем: контекст игрока
     }
 }

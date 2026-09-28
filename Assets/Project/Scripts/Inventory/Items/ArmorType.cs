@@ -1,4 +1,4 @@
-namespace Project.Scripts.Inventory
+namespace Project.Scripts.Inventory.Items
 {
     public enum ArmorType
     {
