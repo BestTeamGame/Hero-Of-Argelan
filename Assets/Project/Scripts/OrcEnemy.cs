@@ -1,4 +1,3 @@
-
 using Project.Scripts;
 using UnityEngine;
 
@@ -30,7 +29,8 @@ public class OrcEnemy : Enemy
 
         if (player == null)
         {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            GameObject playerObject =
+                GameObject.FindGameObjectWithTag("Player");
 
             if (playerObject != null)
                 player = playerObject.transform;
@@ -74,7 +74,8 @@ public class OrcEnemy : Enemy
 
     private void MoveToPlayer()
     {
-        Vector3 direction = player.position - transform.position;
+        Vector3 direction =
+            player.position - transform.position;
 
         direction.y = 0f;
 
@@ -96,7 +97,9 @@ public class OrcEnemy : Enemy
         }
 
         transform.position +=
-            direction.normalized * moveSpeed * Time.deltaTime;
+            direction.normalized *
+            moveSpeed *
+            Time.deltaTime;
 
         animator.SetBool("IsWalking", true);
         animator.SetBool("IsIdle", false);
@@ -119,7 +122,7 @@ public class OrcEnemy : Enemy
         animator.SetBool("IsWalking", false);
         animator.SetBool("IsIdle", false);
 
-        int attackNumber = UnityEngine.Random.Range(0, 2);
+        int attackNumber = Random.Range(0, 2);
 
         if (attackNumber == 0)
         {
@@ -180,7 +183,6 @@ public class OrcEnemy : Enemy
         Destroy(gameObject, 2f);
     }
 
-  
     public void FinishAttack()
     {
         isAttacking = false;
@@ -199,12 +201,29 @@ public class OrcEnemy : Enemy
         if (distance > attackDistance + 0.3f)
             return;
 
-        PlayerController playerController =
-            player.GetComponent<PlayerController>();
+        Player playerComponent =
+            player.GetComponent<Player>();
 
-        if (playerController != null)
+        if (playerComponent == null)
         {
-            playerController.TakeDamage(attackDamage);
+            playerComponent =
+                player.GetComponentInParent<Player>();
+        }
+
+        if (playerComponent != null)
+        {
+            Debug.Log(
+                "Орк наносит игроку урон: " +
+                attackDamage
+            );
+
+            playerComponent.TakeDamage(attackDamage);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Player не найден!"
+            );
         }
     }
 }
