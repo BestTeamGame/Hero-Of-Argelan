@@ -3,7 +3,7 @@ using Project.Scripts.Inventory.Items;
 using Project.Scripts.Stats;
 using UnityEngine;
 
-namespace Project.Scripts.Player
+namespace Project.Scripts.PlayerScripts
 {
     public class PlayerInventory : MonoBehaviour
     {

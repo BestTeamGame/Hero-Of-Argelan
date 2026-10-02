@@ -1,4 +1,4 @@
-using Project.Scripts.Player;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
