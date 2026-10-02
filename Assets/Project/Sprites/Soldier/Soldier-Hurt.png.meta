@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 3a76542e1f734674fa043d8b8e3a5e59
+guid: 548674dfc5f9eff4cb34602f35125c44
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2367449957533476818
-    second: Arrow01(32x32)_0
+      213: 2394668732000811328
+    second: Soldier-Hurt_0
+  - first:
+      213: 2011182554591317053
+    second: Soldier-Hurt_1
+  - first:
+      213: 7915317491827125556
+    second: Soldier-Hurt_2
+  - first:
+      213: -6471843385825578902
+    second: Soldier-Hurt_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -98,40 +107,93 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Arrow01(32x32)_0
+      name: Soldier-Hurt_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 11
-        width: 21
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 39
+        y: 42
+        width: 18
+        height: 20
+      alignment: 9
+      pivot: {x: 0.6158924, y: 0.100925826}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2d7eb4e613fdad020800000000000000
-      internalID: 2367449957533476818
+      spriteID: 049b4a536829b3120800000000000000
+      internalID: 2394668732000811328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Soldier-Hurt_1
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 42
+        width: 18
+        height: 20
+      alignment: 9
+      pivot: {x: 0.60077584, y: 0.08278618}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3cc0e0b0e729eb10800000000000000
+      internalID: 2011182554591317053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Soldier-Hurt_2
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 42
+        width: 18
+        height: 20
+      alignment: 9
+      pivot: {x: 0.62093097, y: 0.091856}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43daac8525bd8dd60800000000000000
+      internalID: 7915317491827125556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Soldier-Hurt_3
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 42
+        width: 18
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5906966, y: 0.08278618}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a60b7e9dab46f26a0800000000000000
+      internalID: -6471843385825578902
       vertices: []
       indices: 
       edges: []
@@ -140,7 +202,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fc460e25bc82b3641aa2019e4ff352b5
     internalID: 0
     vertices: []
     indices: 
@@ -150,7 +212,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Arrow01(32x32)_0: 2367449957533476818
+      Soldier-Hurt_0: 2394668732000811328
+      Soldier-Hurt_1: 2011182554591317053
+      Soldier-Hurt_2: 7915317491827125556
+      Soldier-Hurt_3: -6471843385825578902
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
