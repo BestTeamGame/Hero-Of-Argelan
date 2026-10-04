@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Inventory.Items;
 using Project.Scripts.Stats;
@@ -7,6 +8,8 @@ namespace Project.Scripts.PlayerScripts
 {
     public class PlayerInventory : MonoBehaviour
     {
+        // Приватные поля
+        
         [Header("General")]
         // Или получать в Awake, пока не уверен
         [SerializeField] private PlayerContext playerContext;
@@ -41,6 +44,18 @@ namespace Project.Scripts.PlayerScripts
         [SerializeField, Min(1)] private int maxManaPotions = 5;
         [SerializeField, Min(1)] private int maxArrows = 999;
         
+        // Публичные поля
+        
+        public WeaponData WeaponSlot1 => weaponSlot1;
+        public WeaponData WeaponSlot2 => weaponSlot2;
+
+        public ActiveSkillData ActiveSkill => activeSkill;
+
+        public ArmorData HeadArmor => headArmor;
+        public ArmorData BodyArmor => bodyArmor;
+
+        public IReadOnlyList<ArtifactData> Artifacts => artifacts;
+        
         public int HealthPotions => healthPotions;
         public int ManaPotions => manaPotions;
         
@@ -48,12 +63,23 @@ namespace Project.Scripts.PlayerScripts
         public int Arrows => arrows;
         
         public IReadOnlyList<KeyItemData> KeyItems => keyItems;
+        
+        public int MaxHealthPotions => maxHealthPotions;
+        public int MaxManaPotions => maxManaPotions;
+        public int MaxArrows => maxArrows;
+        
+        // События
+        
+        public event Action EquipmentChanged;
+        public event Action ResourcesChanged;
+        public event Action KeyItemsChanged;
 
         // HealthPotions
         
         private void SetHealthPotions(int amount)
         {
             healthPotions = Mathf.Clamp(amount, 0, maxHealthPotions);
+            ResourcesChanged?.Invoke();
         }
         
         public bool AddHealthPotions(int amount)
@@ -79,6 +105,7 @@ namespace Project.Scripts.PlayerScripts
         private void SetManaPotions(int amount)
         {
             manaPotions = Mathf.Clamp(amount, 0, maxManaPotions);
+            ResourcesChanged?.Invoke();
         }
         
         public bool AddManaPotions(int amount)
@@ -104,6 +131,7 @@ namespace Project.Scripts.PlayerScripts
         private void SetCoins(int amount)
         {
             coins = Mathf.Max(0, amount);
+            ResourcesChanged?.Invoke();
         }
 
         public bool AddCoins(int amount)
@@ -129,6 +157,7 @@ namespace Project.Scripts.PlayerScripts
         private void SetArrows(int amount)
         {
             arrows = Mathf.Clamp(amount, 0, maxArrows);
+            ResourcesChanged?.Invoke();
         }
 
         public bool AddArrows(int amount)
@@ -173,6 +202,7 @@ namespace Project.Scripts.PlayerScripts
                 return false;
             
             keyItems.Add(keyItem);
+            KeyItemsChanged?.Invoke();
             return true;
         }
 
@@ -183,7 +213,11 @@ namespace Project.Scripts.PlayerScripts
         /// <returns>Успешна ли операция</returns>
         public bool RemoveKeyItem(KeyItemData keyItem)
         {
-            return keyItem && keyItems.Remove(keyItem);
+            if (!keyItem || !keyItems.Remove(keyItem))
+                return false;
+            
+            KeyItemsChanged?.Invoke();
+            return true;
         }
         
         // Экипировка и снятие
@@ -264,7 +298,7 @@ namespace Project.Scripts.PlayerScripts
                 default:
                     return null;
             }
-
+            EquipmentChanged?.Invoke();
             return oldWeapon;
         }
         
@@ -294,7 +328,7 @@ namespace Project.Scripts.PlayerScripts
                 default:
                     return null;
             }
-
+            EquipmentChanged?.Invoke();
             return weapon;
         }
         
@@ -335,7 +369,7 @@ namespace Project.Scripts.PlayerScripts
                 default:
                     return null;
             }
-
+            EquipmentChanged?.Invoke();
             return oldArmor;
         }
         
@@ -365,7 +399,7 @@ namespace Project.Scripts.PlayerScripts
                 default:
                     return null;
             }
-
+            EquipmentChanged?.Invoke();
             return armor;
         }
         
@@ -390,7 +424,8 @@ namespace Project.Scripts.PlayerScripts
             artifacts[slot] = artifact;
 
             ApplyItem(artifact);
-
+            
+            EquipmentChanged?.Invoke();
             return oldArtifact;
         }
         
@@ -410,6 +445,7 @@ namespace Project.Scripts.PlayerScripts
             
             artifacts[slot] = null;
             
+            EquipmentChanged?.Invoke();
             return artifact;
         }
         
@@ -430,7 +466,8 @@ namespace Project.Scripts.PlayerScripts
             activeSkill = skill;
 
             ApplyItem(activeSkill);
-
+            
+            EquipmentChanged?.Invoke();
             return oldSkill;
         }
 
@@ -446,7 +483,26 @@ namespace Project.Scripts.PlayerScripts
             
             activeSkill = null;
             
+            EquipmentChanged?.Invoke();
             return skill;
+        }
+        
+        // Инициализация
+        
+        private void Start()
+        {
+            ApplyItem(weaponSlot1);
+            ApplyItem(weaponSlot2);
+
+            ApplyItem(activeSkill);
+
+            ApplyItem(headArmor);
+            ApplyItem(bodyArmor);
+
+            foreach (ArtifactData artifact in artifacts)
+            {
+                ApplyItem(artifact);
+            }
         }
     }
 }
