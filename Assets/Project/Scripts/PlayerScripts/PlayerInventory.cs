@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Project.Scripts.PlayerScripts
 {
+    [RequireComponent(typeof(PlayerContext))]
     public class PlayerInventory : MonoBehaviour
     {
         // Приватные поля
@@ -309,25 +310,23 @@ namespace Project.Scripts.PlayerScripts
         /// <returns>Снятое оружие</returns>
         public WeaponData UnequipWeapon(int slot)
         {
-            WeaponData weapon;
+            if (slot < 0 || slot > 1)
+                return null;
 
-            switch (slot)
-            {
-                case 0:
-                    weapon = weaponSlot1;
-                    UnapplyItem(weapon);
-                    weaponSlot1 = null;
-                    break;
+            WeaponData weapon = slot == 0
+                ? weaponSlot1
+                : weaponSlot2;
 
-                case 1:
-                    weapon = weaponSlot2;
-                    UnapplyItem(weapon);
-                    weaponSlot2 = null;
-                    break;
+            if (!weapon)
+                return null;
 
-                default:
-                    return null;
-            }
+            UnapplyItem(weapon);
+
+            if (slot == 0)
+                weaponSlot1 = null;
+            else
+                weaponSlot2 = null;
+
             EquipmentChanged?.Invoke();
             return weapon;
         }
@@ -380,25 +379,23 @@ namespace Project.Scripts.PlayerScripts
         /// <returns>Снятая броня</returns>
         public ArmorData UnequipArmor(ArmorType type)
         {
-            ArmorData armor;
+            if (type != ArmorType.Head && type != ArmorType.Body)
+                return null;
 
-            switch (type)
-            {
-                case ArmorType.Head:
-                    armor = headArmor;
-                    UnapplyItem(armor);
-                    headArmor = null;
-                    break;
+            ArmorData armor = type == ArmorType.Head
+                ? headArmor
+                : bodyArmor;
 
-                case ArmorType.Body:
-                    armor = bodyArmor;
-                    UnapplyItem(armor);
-                    bodyArmor = null;
-                    break;
+            if (!armor)
+                return null;
 
-                default:
-                    return null;
-            }
+            UnapplyItem(armor);
+
+            if (type == ArmorType.Head)
+                headArmor = null;
+            else
+                bodyArmor = null;
+
             EquipmentChanged?.Invoke();
             return armor;
         }
@@ -441,6 +438,9 @@ namespace Project.Scripts.PlayerScripts
             
             ArtifactData artifact = artifacts[slot];
             
+            if (!artifact)
+                return null;
+
             UnapplyItem(artifact);
             
             artifacts[slot] = null;
@@ -479,6 +479,9 @@ namespace Project.Scripts.PlayerScripts
         {
             ActiveSkillData skill = activeSkill;
             
+            if (!skill)
+                return null;
+
             UnapplyItem(skill);
             
             activeSkill = null;
@@ -503,6 +506,11 @@ namespace Project.Scripts.PlayerScripts
             {
                 ApplyItem(artifact);
             }
+        }
+
+        private void Awake()
+        {
+            playerContext = GetComponent<PlayerContext>();
         }
     }
 }
