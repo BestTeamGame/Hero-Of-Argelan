@@ -4,10 +4,13 @@ namespace Project.Scripts.Inventory.Items
 {
     public abstract class ItemData : ScriptableObject
     {
-        [Header("General")]
-        public string itemName;
-        [TextArea]
-        public string description;
-        public Sprite icon;
+        [Header("General")] 
+        [SerializeField] private string itemName;
+        [SerializeField, TextArea] private string description;
+        [SerializeField] private Sprite icon;
+        
+        public string ItemName => itemName;
+        public string Description => description;
+        public Sprite Icon => icon;
     }
 }

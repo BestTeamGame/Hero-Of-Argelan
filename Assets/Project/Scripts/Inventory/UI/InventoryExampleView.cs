@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using Project.Scripts.Inventory.Items;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Project.Scripts.Inventory.UI
 {
     [Serializable]
-    public class ExampleItem
+    public class ViewItem
     {
+        [NonSerialized] public ItemData source;
+        
         public Sprite icon;
         public string title;
         public string category;
@@ -17,20 +20,21 @@ namespace Project.Scripts.Inventory.UI
     }
 
     [Serializable]
-    public class ExampleSlot
+    public class ViewSlot
     {
         public string label;
         public Button button;
         public Image icon;
         public GameObject selection;
         public GameObject emptyHint;
-        public ExampleItem item;
+        
+        [NonSerialized] public ViewItem item;
     }
 
     // Visual example only. Supply data from your inventory through the public methods.
     public sealed class InventoryExampleView : MonoBehaviour
     {
-        public ExampleSlot[] slots;
+        public ViewSlot[] slots;
         public Image detailIcon;
         public Text detailTitle, detailCategory, detailDescription, detailStats, detailEffects, selectedLabel;
         public Text hpCount, manaCount, coinCount, arrowCount;
@@ -38,10 +42,6 @@ namespace Project.Scripts.Inventory.UI
         public Text cooldownText;
         public Button closeButton;
         public RectTransform window, keyContent;
-        public Font textFont;
-        public Color textColor = new Color32(231, 224, 205, 255);
-        [Tooltip("Starts a 4.2-second cooldown when Play begins. Disable when connecting game data.")]
-        public bool demonstrateCooldown;
         public int selectedIndex;
         private float remaining, duration;
         public event Action<int> SelectionChanged;
@@ -51,9 +51,8 @@ namespace Project.Scripts.Inventory.UI
         [Min(0)] public int keyItemSpacing = 4;
         public Color keyItemBackgroundColor = new Color32(10, 16, 28, 255);
         public Color keyItemSelectionColor = new Color32(71, 218, 239, 255);
-        public event Action<int> KeyItemSelectionChanged;
-        [SerializeField] private List<ExampleSlot> keySlots = new List<ExampleSlot>();
-        private bool keyButtonsBound;
+        public event Action<int> KeyItemSelectionChanged; 
+        private readonly List<ViewSlot> keySlots = new();
         private GridLayoutGroup keyGrid;
         private int selectedKeyItemIndex = -1;
 
@@ -69,27 +68,20 @@ namespace Project.Scripts.Inventory.UI
             if (closeButton)
                 closeButton.onClick.AddListener(Close);
             if (keyContent) keyGrid = keyContent.GetComponent<GridLayoutGroup>();
-            BindKeyItemButtons();
             SelectSlot(selectedIndex);
         }
-
-        private void Start()
+        
+        private void OnRectTransformDimensionsChange()
         {
-            if (demonstrateCooldown) SetSkillCooldown(4.2f, 6f);
-        }
-
-        private void Update()
-        {
-            if (remaining <= 0f) return;
-            remaining = Mathf.Max(0f, remaining - Time.unscaledDeltaTime);
-            RefreshCooldown();
+            if (keyGrid && keyContent)
+                UpdateKeyGridLayout();
         }
 
         public void Open() { window.gameObject.SetActive(true); }
         public void Close() { window.gameObject.SetActive(false); }
 
         // Slot order: weapon I, weapon II, active skill, head, body, artifacts I/II/III.
-        public void SetSlot(int index, ExampleItem item)
+        public void SetSlot(int index, ViewItem item)
         {
             if (slots == null || index < 0 || index >= slots.Length) return;
             slots[index].item = item;
@@ -105,7 +97,7 @@ namespace Project.Scripts.Inventory.UI
             ClearKeyItemSelection();
             selectedIndex = index;
             for (int i = 0; i < slots.Length; i++) slots[i].selection.SetActive(i == index);
-            ExampleItem item = slots[index].item;
+            ViewItem item = slots[index].item;
             detailIcon.sprite = item?.icon;
             detailIcon.enabled = item != null && item.icon;
             detailTitle.text = item != null ? item.title : "Пустой слот";
@@ -141,12 +133,12 @@ namespace Project.Scripts.Inventory.UI
         }
 
         // Unique items only; square icon buttons without labels or fixed capacity.
-        public void SetKeyItems(ExampleItem[] items)
+        public void SetKeyItems(ViewItem[] items)
         {
             if (!keyContent) return;
 
             bool hadKeySelection = selectedKeyItemIndex >= 0;
-            ExampleItem previousItem = selectedKeyItemIndex >= 0 && selectedKeyItemIndex < keySlots.Count
+            ViewItem previousItem = selectedKeyItemIndex >= 0 && selectedKeyItemIndex < keySlots.Count
                 ? keySlots[selectedKeyItemIndex].item
                 : null;
 
@@ -160,7 +152,6 @@ namespace Project.Scripts.Inventory.UI
                     DestroyImmediate(child);
             }
             keySlots.Clear();
-            keyButtonsBound = false;
             selectedKeyItemIndex = -1;
 
             // The grid controls cell positions; the content height is calculated below.
@@ -192,38 +183,42 @@ namespace Project.Scripts.Inventory.UI
             }
 
             if (items != null)
-                foreach (ExampleItem item in items)
+                foreach (ViewItem item in items)
                 {
                     if (item == null) continue;
                     int index = keySlots.Count;
                     keySlots.Add(CreateKeySlot(item, index));
                 }
-
-            BindKeyItemButtons();
+            
             UpdateKeyGridLayout();
             LayoutRebuilder.ForceRebuildLayoutImmediate(keyContent);
 
             // Preserve selection when the same item instance is still in the collection.
-            int restoredIndex = previousItem != null
-                ? keySlots.FindIndex(slot => ReferenceEquals(slot.item, previousItem))
-                : -1;
+            int restoredIndex =
+                previousItem?.source 
+                    ? keySlots.FindIndex(
+                        slot =>
+                            slot.item != null &&
+                            slot.item.source == previousItem.source)
+                    : -1;
             if (restoredIndex >= 0)
                 SelectKeyItem(restoredIndex);
             else if (hadKeySelection)
                 SelectSlot(selectedIndex);
         }
-
+        
+        
         public void SelectKeyItem(int index)
         {
             if (index < 0 || index >= keySlots.Count) return;
             selectedKeyItemIndex = index;
             if (slots != null)
-                foreach (ExampleSlot slot in slots)
+                foreach (ViewSlot slot in slots)
                     if (slot != null && slot.selection) slot.selection.SetActive(false);
             for (int i = 0; i < keySlots.Count; i++)
                 keySlots[i].selection.SetActive(i == index);
 
-            ExampleItem item = keySlots[index].item;
+            ViewItem item = keySlots[index].item;
             detailIcon.sprite = item.icon;
             detailIcon.enabled = item.icon;
             detailTitle.text = item.title;
@@ -238,26 +233,8 @@ namespace Project.Scripts.Inventory.UI
         private void ClearKeyItemSelection()
         {
             selectedKeyItemIndex = -1;
-            foreach (ExampleSlot slot in keySlots)
+            foreach (ViewSlot slot in keySlots)
                 if (slot.selection) slot.selection.SetActive(false);
-        }
-
-        private void BindKeyItemButtons()
-        {
-            if (keyButtonsBound) return;
-            for (int i = 0; i < keySlots.Count; i++)
-            {
-                int index = i;
-                if (keySlots[i].button)
-                    keySlots[i].button.onClick.AddListener(() => SelectKeyItem(index));
-            }
-            keyButtonsBound = true;
-        }
-
-        private void LateUpdate()
-        {
-            // Adapt the column count when the viewport width changes.
-            if (keyGrid && keyContent) UpdateKeyGridLayout();
         }
 
         private void UpdateKeyGridLayout()
@@ -280,7 +257,7 @@ namespace Project.Scripts.Inventory.UI
                 keyContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         }
 
-        private ExampleSlot CreateKeySlot(ExampleItem item, int index)
+        private ViewSlot CreateKeySlot(ViewItem item, int index)
         {
             var obj = new GameObject("KeyItem_" + index, typeof(RectTransform), typeof(Image), typeof(Button));
             obj.transform.SetParent(keyContent, false);
@@ -289,6 +266,10 @@ namespace Project.Scripts.Inventory.UI
             background.raycastTarget = true;
             var button = obj.GetComponent<Button>();
             button.targetGraphic = background;
+            
+            button.onClick.AddListener(
+                () => SelectKeyItem(index)
+            );
 
             var iconObject = new GameObject("Icon", typeof(RectTransform), typeof(Image));
             iconObject.transform.SetParent(obj.transform, false);
@@ -315,13 +296,13 @@ namespace Project.Scripts.Inventory.UI
             AddKeyBorder(selectionRect, "Right", new Vector2(1, 0), Vector2.one, new Vector2(-2, 0), Vector2.zero);
             selection.SetActive(false);
 
-            return new ExampleSlot { label = item.title, button = button, icon = icon, selection = selection, item = item };
+            return new ViewSlot { label = item.title, button = button, icon = icon, selection = selection, item = item };
         }
 
-        private void AddKeyBorder(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax,
+        private void AddKeyBorder(Transform parent, string keyItemName, Vector2 anchorMin, Vector2 anchorMax,
             Vector2 offsetMin, Vector2 offsetMax)
         {
-            var obj = new GameObject(name, typeof(RectTransform), typeof(Image));
+            var obj = new GameObject(keyItemName, typeof(RectTransform), typeof(Image));
             obj.transform.SetParent(parent, false);
             var rect = (RectTransform)obj.transform;
             rect.anchorMin = anchorMin;

@@ -1,7 +1,11 @@
+using UnityEngine;
+
 namespace Project.Scripts.Inventory.Items
 {
     public class MeleeWeaponData: WeaponData
     {
-        public float attackRange;
+        [SerializeField] private float attackRange;
+
+        public float AttackRange => attackRange;
     }
 }

@@ -1,7 +1,11 @@
+using UnityEngine;
+
 namespace Project.Scripts.Inventory.Items
 {
     public class ActiveSkillData: EquippableItemData
     {
-        public float cooldown;
+        [SerializeField] private float cooldown;
+        
+        public float Cooldown => cooldown;
     }
 }

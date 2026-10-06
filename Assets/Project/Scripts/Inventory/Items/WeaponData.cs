@@ -1,8 +1,13 @@
+using UnityEngine;
+
 namespace Project.Scripts.Inventory.Items
 {
     public class WeaponData: EquippableItemData
     {
-        public int damage;
-        public float attackSpeed;
+        [SerializeField] private int damage;
+        [SerializeField] private float attackSpeed;
+        
+        public int Damage => damage;
+        public float AttackSpeed => attackSpeed;
     }
 }

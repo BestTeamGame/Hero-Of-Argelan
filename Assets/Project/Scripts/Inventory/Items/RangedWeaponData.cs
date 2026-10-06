@@ -1,7 +1,11 @@
+using UnityEngine;
+
 namespace Project.Scripts.Inventory.Items
 {
     public class RangedWeaponData: WeaponData
     {
-        public int arrowsPerShot = 1;
+        [SerializeField] private int arrowsPerShot = 1;
+        
+        public int ArrowsPerShot => arrowsPerShot;
     }
 }

@@ -343,7 +343,7 @@ namespace Project.Scripts.PlayerScripts
 
             ArmorData oldArmor;
 
-            switch (armor.armorType)
+            switch (armor.ArmorType)
             {
                 case ArmorType.Head:
                     oldArmor = headArmor;

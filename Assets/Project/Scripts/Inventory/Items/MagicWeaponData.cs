@@ -1,7 +1,11 @@
+using UnityEngine;
+
 namespace Project.Scripts.Inventory.Items
 {
     public class MagicWeaponData: WeaponData
     {
-        public int manaCost;
+        [SerializeField] private int manaCost;
+        
+        public int ManaCost => manaCost;
     }
 }
