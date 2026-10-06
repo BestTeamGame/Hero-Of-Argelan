@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,10 +41,21 @@ namespace Project.Scripts.Inventory.UI
         public Font textFont;
         public Color textColor = new Color32(231, 224, 205, 255);
         [Tooltip("Starts a 4.2-second cooldown when Play begins. Disable when connecting game data.")]
-        public bool demonstrateCooldown = true;
+        public bool demonstrateCooldown;
         public int selectedIndex;
         private float remaining, duration;
         public event Action<int> SelectionChanged;
+
+        [Header("Key items grid")]
+        [Min(8)] public int keyItemCellSize = 28;
+        [Min(0)] public int keyItemSpacing = 4;
+        public Color keyItemBackgroundColor = new Color32(10, 16, 28, 255);
+        public Color keyItemSelectionColor = new Color32(71, 218, 239, 255);
+        public event Action<int> KeyItemSelectionChanged;
+        [SerializeField] private List<ExampleSlot> keySlots = new List<ExampleSlot>();
+        private bool keyButtonsBound;
+        private GridLayoutGroup keyGrid;
+        private int selectedKeyItemIndex = -1;
 
         private void Awake()
         {
@@ -51,10 +63,13 @@ namespace Project.Scripts.Inventory.UI
                 for (int i = 0; i < slots.Length; i++)
                 {
                     int index = i;
-                    if (slots[i].button != null)
+                    if (slots[i].button)
                         slots[i].button.onClick.AddListener(() => SelectSlot(index));
                 }
-            if (closeButton != null) closeButton.onClick.AddListener(Close);
+            if (closeButton)
+                closeButton.onClick.AddListener(Close);
+            if (keyContent) keyGrid = keyContent.GetComponent<GridLayoutGroup>();
+            BindKeyItemButtons();
             SelectSlot(selectedIndex);
         }
 
@@ -78,20 +93,21 @@ namespace Project.Scripts.Inventory.UI
         {
             if (slots == null || index < 0 || index >= slots.Length) return;
             slots[index].item = item;
-            slots[index].icon.sprite = item != null ? item.icon : null;
-            slots[index].icon.enabled = item != null && item.icon != null;
-            if (slots[index].emptyHint != null) slots[index].emptyHint.SetActive(item == null);
-            if (selectedIndex == index) SelectSlot(index);
+            slots[index].icon.sprite = item?.icon;
+            slots[index].icon.enabled = item != null && item.icon;
+            if (slots[index].emptyHint) slots[index].emptyHint.SetActive(item == null);
+            if (selectedIndex == index && selectedKeyItemIndex < 0) SelectSlot(index);
         }
 
         public void SelectSlot(int index)
         {
             if (slots == null || index < 0 || index >= slots.Length) return;
+            ClearKeyItemSelection();
             selectedIndex = index;
             for (int i = 0; i < slots.Length; i++) slots[i].selection.SetActive(i == index);
             ExampleItem item = slots[index].item;
-            detailIcon.sprite = item != null ? item.icon : null;
-            detailIcon.enabled = item != null && item.icon != null;
+            detailIcon.sprite = item?.icon;
+            detailIcon.enabled = item != null && item.icon;
             detailTitle.text = item != null ? item.title : "Пустой слот";
             detailCategory.text = item != null ? item.category : slots[index].label;
             detailDescription.text = item != null ? item.description : "Выбери предмет в этой категории.";
@@ -124,64 +140,197 @@ namespace Project.Scripts.Inventory.UI
             cooldownText.text = remaining > 0f ? remaining.ToString("0.0") + " с" : "Готов";
         }
 
-        // Unique items only; no fixed number of placeholders or stacks.
+        // Unique items only; square icon buttons without labels or fixed capacity.
         public void SetKeyItems(ExampleItem[] items)
         {
+            if (!keyContent) return;
+
+            bool hadKeySelection = selectedKeyItemIndex >= 0;
+            ExampleItem previousItem = selectedKeyItemIndex >= 0 && selectedKeyItemIndex < keySlots.Count
+                ? keySlots[selectedKeyItemIndex].item
+                : null;
+
             for (int i = keyContent.childCount - 1; i >= 0; i--)
             {
                 GameObject child = keyContent.GetChild(i).gameObject;
                 child.SetActive(false);
-                if (Application.isPlaying) Destroy(child); else DestroyImmediate(child);
+                if (Application.isPlaying)
+                    Destroy(child);
+                else
+                    DestroyImmediate(child);
             }
-            int count = items == null ? 0 : items.Length;
-            float available = ((RectTransform)keyContent.parent).rect.width;
-            keyContent.sizeDelta = new Vector2(Mathf.Max(available, count * 146f), 28f);
+            keySlots.Clear();
+            keyButtonsBound = false;
+            selectedKeyItemIndex = -1;
+
+            // The grid controls cell positions; the content height is calculated below.
+            foreach (LayoutGroup layout in keyContent.GetComponents<LayoutGroup>())
+                if (!(layout is GridLayoutGroup)) layout.enabled = false;
+            ContentSizeFitter fitter = keyContent.GetComponent<ContentSizeFitter>();
+            if (fitter) fitter.enabled = false;
+
+            keyGrid = keyContent.GetComponent<GridLayoutGroup>();
+            if (!keyGrid) keyGrid = keyContent.gameObject.AddComponent<GridLayoutGroup>();
+            keyGrid.enabled = true;
+            keyGrid.padding = new RectOffset();
+            keyGrid.childAlignment = TextAnchor.UpperLeft;
+            keyGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+            keyGrid.startAxis = GridLayoutGroup.Axis.Horizontal;
+            keyGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+
+            keyContent.anchorMin = new Vector2(0, 1);
+            keyContent.anchorMax = new Vector2(1, 1);
+            keyContent.pivot = new Vector2(0, 1);
+            keyContent.sizeDelta = new Vector2(0, keyContent.sizeDelta.y);
             keyContent.anchoredPosition = Vector2.zero;
-            if (count == 0)
+
+            ScrollRect scroll = keyContent.GetComponentInParent<ScrollRect>();
+            if (scroll && scroll.content == keyContent)
             {
-                AddKeyLabel(keyContent, "Ключевых предметов пока нет", 0f, 320f);
-                return;
+                scroll.horizontal = false;
+                scroll.vertical = true;
             }
-            for (int i = 0; i < count; i++)
-            {
-                if (items[i] == null) continue;
-                var row = new GameObject("KeyItem_" + i, typeof(RectTransform));
-                row.transform.SetParent(keyContent, false);
-                var rect = (RectTransform)row.transform;
-                rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0, 1);
-                rect.anchoredPosition = new Vector2(i * 146f, 0);
-                rect.sizeDelta = new Vector2(146, 28);
-                var iconObject = new GameObject("Icon", typeof(RectTransform), typeof(Image));
-                iconObject.transform.SetParent(rect, false);
-                var iconRect = (RectTransform)iconObject.transform;
-                iconRect.anchorMin = iconRect.anchorMax = iconRect.pivot = new Vector2(0, 1);
-                iconRect.anchoredPosition = new Vector2(0, -2);
-                iconRect.sizeDelta = new Vector2(24, 24);
-                var icon = iconObject.GetComponent<Image>();
-                icon.sprite = items[i].icon;
-                icon.enabled = items[i].icon != null;
-                icon.preserveAspect = true;
-                icon.raycastTarget = false;
-                AddKeyLabel(rect, items[i].title, 30, 110);
-            }
+
+            if (items != null)
+                foreach (ExampleItem item in items)
+                {
+                    if (item == null) continue;
+                    int index = keySlots.Count;
+                    keySlots.Add(CreateKeySlot(item, index));
+                }
+
+            BindKeyItemButtons();
+            UpdateKeyGridLayout();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(keyContent);
+
+            // Preserve selection when the same item instance is still in the collection.
+            int restoredIndex = previousItem != null
+                ? keySlots.FindIndex(slot => ReferenceEquals(slot.item, previousItem))
+                : -1;
+            if (restoredIndex >= 0)
+                SelectKeyItem(restoredIndex);
+            else if (hadKeySelection)
+                SelectSlot(selectedIndex);
         }
 
-        private void AddKeyLabel(Transform parent, string value, float x, float width)
+        public void SelectKeyItem(int index)
         {
-            var obj = new GameObject("Name", typeof(RectTransform), typeof(Text));
+            if (index < 0 || index >= keySlots.Count) return;
+            selectedKeyItemIndex = index;
+            if (slots != null)
+                foreach (ExampleSlot slot in slots)
+                    if (slot != null && slot.selection) slot.selection.SetActive(false);
+            for (int i = 0; i < keySlots.Count; i++)
+                keySlots[i].selection.SetActive(i == index);
+
+            ExampleItem item = keySlots[index].item;
+            detailIcon.sprite = item.icon;
+            detailIcon.enabled = item.icon;
+            detailTitle.text = item.title;
+            detailCategory.text = item.category;
+            detailDescription.text = item.description;
+            detailStats.text = item.stats;
+            detailEffects.text = item.effects;
+            selectedLabel.text = "Выбрано: " + item.title;
+            KeyItemSelectionChanged?.Invoke(index);
+        }
+
+        private void ClearKeyItemSelection()
+        {
+            selectedKeyItemIndex = -1;
+            foreach (ExampleSlot slot in keySlots)
+                if (slot.selection) slot.selection.SetActive(false);
+        }
+
+        private void BindKeyItemButtons()
+        {
+            if (keyButtonsBound) return;
+            for (int i = 0; i < keySlots.Count; i++)
+            {
+                int index = i;
+                if (keySlots[i].button)
+                    keySlots[i].button.onClick.AddListener(() => SelectKeyItem(index));
+            }
+            keyButtonsBound = true;
+        }
+
+        private void LateUpdate()
+        {
+            // Adapt the column count when the viewport width changes.
+            if (keyGrid && keyContent) UpdateKeyGridLayout();
+        }
+
+        private void UpdateKeyGridLayout()
+        {
+            float cellSize = Mathf.Max(8, keyItemCellSize);
+            float spacing = Mathf.Max(0, keyItemSpacing);
+            RectTransform viewport = keyContent.parent as RectTransform;
+            float width = viewport ? viewport.rect.width : keyContent.rect.width;
+            int columns = Mathf.Max(1, Mathf.FloorToInt((width + spacing) / (cellSize + spacing)));
+            Vector2 size = new Vector2(cellSize, cellSize);
+            Vector2 gap = new Vector2(spacing, spacing);
+            if (keyGrid.cellSize != size) keyGrid.cellSize = size;
+            if (keyGrid.spacing != gap) keyGrid.spacing = gap;
+            if (keyGrid.constraintCount != columns) keyGrid.constraintCount = columns;
+
+            int rows = (keySlots.Count + columns - 1) / columns;
+            float height = rows > 0 ? rows * cellSize + (rows - 1) * spacing : 0;
+            if (viewport) height = Mathf.Max(height, viewport.rect.height);
+            if (!Mathf.Approximately(keyContent.rect.height, height))
+                keyContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+        }
+
+        private ExampleSlot CreateKeySlot(ExampleItem item, int index)
+        {
+            var obj = new GameObject("KeyItem_" + index, typeof(RectTransform), typeof(Image), typeof(Button));
+            obj.transform.SetParent(keyContent, false);
+            var background = obj.GetComponent<Image>();
+            background.color = keyItemBackgroundColor;
+            background.raycastTarget = true;
+            var button = obj.GetComponent<Button>();
+            button.targetGraphic = background;
+
+            var iconObject = new GameObject("Icon", typeof(RectTransform), typeof(Image));
+            iconObject.transform.SetParent(obj.transform, false);
+            var iconRect = (RectTransform)iconObject.transform;
+            iconRect.anchorMin = Vector2.zero;
+            iconRect.anchorMax = Vector2.one;
+            iconRect.offsetMin = new Vector2(4, 4);
+            iconRect.offsetMax = new Vector2(-4, -4);
+            var icon = iconObject.GetComponent<Image>();
+            icon.sprite = item.icon;
+            icon.enabled = item.icon;
+            icon.preserveAspect = true;
+            icon.raycastTarget = false;
+
+            var selection = new GameObject("Selection", typeof(RectTransform));
+            selection.transform.SetParent(obj.transform, false);
+            var selectionRect = (RectTransform)selection.transform;
+            selectionRect.anchorMin = Vector2.zero;
+            selectionRect.anchorMax = Vector2.one;
+            selectionRect.offsetMin = selectionRect.offsetMax = Vector2.zero;
+            AddKeyBorder(selectionRect, "Top", new Vector2(0, 1), Vector2.one, new Vector2(0, -2), Vector2.zero);
+            AddKeyBorder(selectionRect, "Bottom", Vector2.zero, new Vector2(1, 0), Vector2.zero, new Vector2(0, 2));
+            AddKeyBorder(selectionRect, "Left", Vector2.zero, new Vector2(0, 1), Vector2.zero, new Vector2(2, 0));
+            AddKeyBorder(selectionRect, "Right", new Vector2(1, 0), Vector2.one, new Vector2(-2, 0), Vector2.zero);
+            selection.SetActive(false);
+
+            return new ExampleSlot { label = item.title, button = button, icon = icon, selection = selection, item = item };
+        }
+
+        private void AddKeyBorder(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 offsetMin, Vector2 offsetMax)
+        {
+            var obj = new GameObject(name, typeof(RectTransform), typeof(Image));
             obj.transform.SetParent(parent, false);
             var rect = (RectTransform)obj.transform;
-            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0, 1);
-            rect.anchoredPosition = new Vector2(x, 0);
-            rect.sizeDelta = new Vector2(width, 28);
-            var text = obj.GetComponent<Text>();
-            text.font = textFont;
-            text.fontSize = 9;
-            text.alignment = TextAnchor.MiddleLeft;
-            text.color = textColor;
-            text.supportRichText = false;
-            text.raycastTarget = false;
-            text.text = value;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+            var image = obj.GetComponent<Image>();
+            image.color = keyItemSelectionColor;
+            image.raycastTarget = false;
         }
     }
 }
