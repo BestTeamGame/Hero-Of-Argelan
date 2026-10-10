@@ -1,6 +1,9 @@
+using System.Linq;
+using Project.Scripts.Converters;
 using Project.Scripts.Inventory.Items;
 using Project.Scripts.PlayerScripts;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Project.Scripts.Inventory.UI
 {
@@ -17,29 +20,53 @@ namespace Project.Scripts.Inventory.UI
 
         [Header("View")]
         [SerializeField] private InventoryExampleView view;
+        
+        [Header("Input")]
+        [SerializeField] private InputActionReference inventoryAction;
 
         private PlayerInventory inventory;
         private bool isSubscribed;
+        private bool isOpen;
 
         private void Awake()
         {
             if (!view)
                 view = GetComponent<InventoryExampleView>();
+            
+            view.Close();
         }
-
+        
         private void OnEnable()
         {
             Subscribe();
+            
+            if (view)
+                view.CloseRequested += Close;
+            
+            if (inventoryAction)
+            {
+                inventoryAction.action.performed += OnInventoryPressed;
+                inventoryAction.action.Enable();
+            }
+            
             RefreshAll();
         }
 
         private void OnDisable()
         {
             Unsubscribe();
-        }
+            
+            if (view)
+                view.CloseRequested -= Close;
 
+            if (!inventoryAction) return;
+            
+            inventoryAction.action.performed -= OnInventoryPressed;
+            inventoryAction.action.Disable();
+        }
+        
         /// <summary>
-        /// Связывает UI инвентаря с конкретным PlayerInventory.
+        /// Связывает UI инвентаря с конкретным <see cref="PlayerInventory"/>.
         /// </summary>
         /// <param name="playerInventory">Инвентарь игрока.</param>
         public void Initialize(PlayerInventory playerInventory)
@@ -64,7 +91,61 @@ namespace Project.Scripts.Inventory.UI
             Subscribe();
             RefreshAll();
         }
+        
+        /// <summary>
+        /// Событие при нажатии инвентаря.
+        /// </summary>
+        /// <param name="context">Контекст.</param>
+        private void OnInventoryPressed(InputAction.CallbackContext context)
+        {
+            Toggle();
+        }
+        
+        /// <summary>
+        /// Закрывает UI, если открыт. Иначе - открывает UI.
+        /// </summary>
+        public void Toggle()
+        {
+            if (isOpen)
+                Close();
+            else
+                Open();
+        }
+        
+        /// <summary>
+        /// Открывает UI представление инвентаря и ставит игру на паузу.
+        /// </summary>
+        public void Open()
+        {
+            if (isOpen)
+                return;
 
+            isOpen = true;
+
+            RefreshAll();
+            view.Open();
+            
+            Time.timeScale = 0f;
+        }
+
+        /// <summary>
+        /// Закрывает UI представление инвентаря и убирает игру с паузы.
+        /// </summary>
+        public void Close()
+        {
+            if (!isOpen)
+                return;
+
+            isOpen = false;
+            
+            view.Close();
+            
+            Time.timeScale = 1f;
+        }
+
+        /// <summary>
+        /// Подписывает контроллер на обновления инвентаря <see cref="PlayerInventory"/>.
+        /// </summary>
         private void Subscribe()
         {
             if (!inventory || isSubscribed)
@@ -77,6 +158,9 @@ namespace Project.Scripts.Inventory.UI
             isSubscribed = true;
         }
 
+        /// <summary>
+        /// Отписывает контроллер на обновления инвентаря <see cref="PlayerInventory"/>.
+        /// </summary>
         private void Unsubscribe()
         {
             if (!inventory || !isSubscribed)
@@ -89,6 +173,9 @@ namespace Project.Scripts.Inventory.UI
             isSubscribed = false;
         }
 
+        /// <summary>
+        /// Обновляет все элементы инвентаря на UI представлении.
+        /// </summary>
         private void RefreshAll()
         {
             if (!inventory || !view)
@@ -99,6 +186,9 @@ namespace Project.Scripts.Inventory.UI
             RefreshKeyItems();
         }
 
+        /// <summary>
+        /// Обновляет экипировку на UI представлении.
+        /// </summary>
         private void RefreshEquipment()
         {
             if (!inventory || !view)
@@ -142,6 +232,9 @@ namespace Project.Scripts.Inventory.UI
             }
         }
 
+        /// <summary>
+        /// Обновляет ресурсы на UI представлении.
+        /// </summary>
         private void RefreshResources()
         {
             if (!inventory || !view)
@@ -157,6 +250,9 @@ namespace Project.Scripts.Inventory.UI
             );
         }
 
+        /// <summary>
+        /// Обновляет ключевые предметы на UI представлении.
+        /// </summary>
         private void RefreshKeyItems()
         {
             if (!inventory || !view)
@@ -172,7 +268,12 @@ namespace Project.Scripts.Inventory.UI
 
             view.SetKeyItems(items);
         }
-
+        
+        /// <summary>
+        /// Конвертирует предмет из типа <see cref="ItemData"/> в тип <see cref="ViewItem"/>.
+        /// </summary>
+        /// <param name="item">Предмет типа <see cref="ItemData"/>.</param>
+        /// <returns>Предмет типа <see cref="ViewItem"/>.</returns>
         private static ViewItem ConvertItem(ItemData item)
         {
             if (!item)
@@ -190,6 +291,11 @@ namespace Project.Scripts.Inventory.UI
             };
         }
 
+        /// <summary>
+        /// Получает строковое название категории предмета.
+        /// </summary>
+        /// <param name="item">Предмет.</param>
+        /// <returns>Название категории предмета.</returns>
         private static string GetCategory(ItemData item)
         {
             return item switch
@@ -203,28 +309,44 @@ namespace Project.Scripts.Inventory.UI
             };
         }
 
+        /// <summary>
+        /// Получает строковые модификаторы статистики предмета.
+        /// </summary>
+        /// <param name="item">Предмет.</param>
+        /// <returns>Модификаторы статистики предмета.</returns>
         private static string GetStats(ItemData item)
         {
-            if (item is not EquippableItemData)
+            if (item is not EquippableItemData equippable)
                 return "";
 
-            // TODO:
-            // Здесь позже можно сформировать красивую строку
-            // из equippable.StatModifiers.
+            if (equippable.StatModifiers.Count == 0)
+                return "";
 
-            return "";
+            return string.Join(
+                "\n",
+                equippable.StatModifiers.Select(StatTextFormatter.Format)
+            );
         }
 
+        /// <summary>
+        /// Получает строковые эффекты предмета.
+        /// </summary>
+        /// <param name="item">Предмет.</param>
+        /// <returns>Эффекты предмета.</returns>
         private static string GetEffects(ItemData item)
         {
-            if (item is not EquippableItemData)
+            if (item is not EquippableItemData equippable)
                 return "";
 
-            // TODO:
-            // Здесь позже можно сформировать описание
-            // equippable.ItemEffects.
+            if (equippable.ItemEffects.Count == 0)
+                return "";
 
-            return "";
+            return string.Join(
+                "\n\n",
+                equippable.ItemEffects.Select(
+                    effect => $"{effect.EffectName}\n{effect.GetDescription()}"
+                )
+            );
         }
     }
 }

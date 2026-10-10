@@ -45,6 +45,7 @@ namespace Project.Scripts.Inventory.UI
         public int selectedIndex;
         private float remaining, duration;
         public event Action<int> SelectionChanged;
+        public event Action CloseRequested;
 
         [Header("Key items grid")]
         [Min(8)] public int keyItemCellSize = 28;
@@ -66,7 +67,9 @@ namespace Project.Scripts.Inventory.UI
                         slots[i].button.onClick.AddListener(() => SelectSlot(index));
                 }
             if (closeButton)
-                closeButton.onClick.AddListener(Close);
+                closeButton.onClick.AddListener(
+                    () => CloseRequested?.Invoke()
+                );
             if (keyContent) keyGrid = keyContent.GetComponent<GridLayoutGroup>();
             SelectSlot(selectedIndex);
         }

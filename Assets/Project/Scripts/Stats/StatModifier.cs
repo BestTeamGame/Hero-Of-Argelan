@@ -5,7 +5,10 @@ namespace Project.Scripts.Stats
     [Serializable]
     public class StatModifier
     {
-        public StatType statType;
-        public float value;
+        private StatType statType;
+        private float value;
+        
+        public float Value => value;
+        public StatType StatType => statType;
     }
 }

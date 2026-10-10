@@ -5786,6 +5786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.Inventory.UI.InventoryUIController
   view: {fileID: 6658569466405777451}
+  inventoryAction: {fileID: -625549320526345772, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!1 &2158696633381031600
 GameObject:
   m_ObjectHideFlags: 0
