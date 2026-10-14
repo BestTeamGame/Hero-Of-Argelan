@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2204675123389174733}
   - component: {fileID: 10770336014559664}
   - component: {fileID: 2171314686836779462}
-  - component: {fileID: 3383983545338732701}
   m_Layer: 7
   m_Name: OrcEnemy
   m_TagString: Untagged
@@ -84,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9150489477472823759, guid: e54791524f81df94eaf9930afc636c62, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -142,7 +141,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388833023517512765}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -203,16 +202,3 @@ MonoBehaviour:
   attackCooldown: 1.5
   player: {fileID: 0}
   animator: {fileID: 10770336014559664}
---- !u!114 &3383983545338732701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1388833023517512765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68090159b221da34cb42200c3992ce8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  maxHealth: 100
