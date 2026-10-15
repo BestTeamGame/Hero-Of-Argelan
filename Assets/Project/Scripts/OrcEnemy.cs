@@ -1,229 +1,218 @@
-using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
-public class OrcEnemy : Enemy
+namespace Project.Scripts
 {
-    [Header("Movement")]
-    public float moveSpeed = 2f;
-    public float detectionDistance = 7f;
-    public float attackDistance = 1.5f;
-
-    [Header("Attack")]
-    public int attackDamage = 20;
-    public float attackCooldown = 1.5f;
-
-    [Header("References")]
-    public Transform player;
-    public Animator animator;
-
-    private float attackTimer;
-    private bool isAttacking;
-    private bool isHurt;
-
-    protected override void Start()
+    public class OrcEnemy : Enemy
     {
-        base.Start();
+        private static readonly int IsWalking = Animator.StringToHash("IsWalking");
+        private static readonly int IsIdle = Animator.StringToHash("IsIdle");
+        private static readonly int Death = Animator.StringToHash("Death");
+        private static readonly int Hurt = Animator.StringToHash("Hurt");
+        private static readonly int Attack2 = Animator.StringToHash("Attack2");
+        private static readonly int Attack1 = Animator.StringToHash("Attack1");
 
-        if (animator == null)
-            animator = GetComponent<Animator>();
+        [Header("Movement")]
+        public float moveSpeed = 2f;
+        public float detectionDistance = 7f;
+        public float attackDistance = 1.5f;
 
-        if (player == null)
+        [Header("Attack")]
+        public int attackDamage = 20;
+        public float attackCooldown = 1.5f;
+
+        [Header("References")]
+        public Animator animator;
+
+        private float attackTimer;
+        private bool isAttacking;
+        private bool isHurt;
+    
+        [SerializeField] private PlayerContext playerContext;
+
+        protected override void Start()
         {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+            base.Start();
 
-            if (playerObject != null)
-                player = playerObject.transform;
-        }
-    }
+            if (!animator)
+                animator = GetComponent<Animator>();
 
-    private void Update()
-    {
-        if (isDead)
-            return;
+            if (!playerContext)
+            {
+                GameObject playerObject =
+                    GameObject.FindGameObjectWithTag("Player");
 
-        if (player == null)
-        {
-            SetIdleAnimation();
-            return;
-        }
-
-        attackTimer -= Time.deltaTime;
-
-        if (isHurt || isAttacking)
-            return;
-
-        float distance = Vector2.Distance(
-            transform.position,
-            player.position
-        );
-
-        if (distance <= attackDistance)
-        {
-            Attack();
-        }
-        else if (distance <= detectionDistance)
-        {
-            MoveToPlayer();
-        }
-        else
-        {
-            SetIdleAnimation();
-        }
-    }
-
-    private void MoveToPlayer()
-    {
-        Vector3 direction =
-            player.position - transform.position;
-
-        direction.y = 0f;
-
-        if (direction.x > 0f)
-        {
-            transform.localScale = new Vector3(
-                Mathf.Abs(transform.localScale.x),
-                transform.localScale.y,
-                transform.localScale.z
-            );
-        }
-        else if (direction.x < 0f)
-        {
-            transform.localScale = new Vector3(
-                -Mathf.Abs(transform.localScale.x),
-                transform.localScale.y,
-                transform.localScale.z
-            );
+                if (playerObject)
+                {
+                    playerContext = playerObject.GetComponent<PlayerContext>();
+                }
+            }
         }
 
-        transform.position +=
-            direction.normalized *
-            moveSpeed *
-            Time.deltaTime;
-
-        animator.SetBool("IsWalking", true);
-        animator.SetBool("IsIdle", false);
-    }
-
-    private void SetIdleAnimation()
-    {
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsIdle", true);
-    }
-
-    private void Attack()
-    {
-        if (attackTimer > 0f)
-            return;
-
-        attackTimer = attackCooldown;
-        isAttacking = true;
-
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsIdle", false);
-
-        int attackNumber = Random.Range(0, 2);
-
-        if (attackNumber == 0)
+        private void Update()
         {
-            animator.SetTrigger("Attack1");
-        }
-        else
-        {
-            animator.SetTrigger("Attack2");
-        }
-    }
+            if (isDead)
+                return;
 
-    public override void TakeDamage(int damage)
-    {
-        if (isDead)
-            return;
+            if (!playerContext)
+            {
+                SetIdleAnimation();
+                return;
+            }
 
-        base.TakeDamage(damage);
+            attackTimer -= Time.deltaTime;
 
-        if (isDead)
-            return;
+            if (isHurt || isAttacking)
+                return;
 
-        isHurt = true;
-        isAttacking = false;
-
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsIdle", false);
-
-        animator.SetTrigger("Hurt");
-
-        CancelInvoke(nameof(EndHurt));
-        Invoke(nameof(EndHurt), 0.5f);
-    }
-
-    private void EndHurt()
-    {
-        if (isDead)
-            return;
-
-        isHurt = false;
-    }
-
-    protected override void Die()
-    {
-        if (isDead)
-            return;
-
-        isDead = true;
-        isAttacking = false;
-        isHurt = false;
-
-        CancelInvoke(nameof(EndHurt));
-
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsIdle", false);
-
-        animator.SetTrigger("Death");
-
-        Destroy(gameObject, 2f);
-    }
-
-    public void FinishAttack()
-    {
-        isAttacking = false;
-    }
-
-    public void DealDamage()
-    {
-        if (isDead || player == null)
-            return;
-
-        float distance = Vector2.Distance(
-            transform.position,
-            player.position
-        );
-
-        if (distance > attackDistance + 0.3f)
-            return;
-
-        Player playerComponent =
-            player.GetComponent<Player>();
-
-        if (playerComponent == null)
-        {
-            playerComponent =
-                player.GetComponentInParent<Player>();
-        }
-
-        if (playerComponent != null)
-        {
-            Debug.Log(
-                "Орк наносит игроку урон: " +
-                attackDamage
+            float distance = Vector2.Distance(
+                transform.position,
+                playerContext.transform.position
             );
 
-            playerComponent.TakeDamage(attackDamage);
+            if (distance <= attackDistance)
+            {
+                Attack();
+            }
+            else if (distance <= detectionDistance)
+            {
+                MoveToPlayer();
+            }
+            else
+            {
+                SetIdleAnimation();
+            }
         }
-        else
+
+        private void MoveToPlayer()
         {
-            Debug.LogWarning(
-                "Player не найден!"
+            Vector3 direction =
+                playerContext.transform.position -
+                transform.position;
+
+            direction.y = 0f;
+
+            if (direction.x > 0f)
+            {
+                transform.localScale = new Vector3(
+                    Mathf.Abs(transform.localScale.x),
+                    transform.localScale.y,
+                    transform.localScale.z
+                );
+            }
+            else if (direction.x < 0f)
+            {
+                transform.localScale = new Vector3(
+                    -Mathf.Abs(transform.localScale.x),
+                    transform.localScale.y,
+                    transform.localScale.z
+                );
+            }
+
+            transform.position +=
+                direction.normalized * (moveSpeed * Time.deltaTime);
+
+            animator.SetBool(IsWalking, true);
+            animator.SetBool(IsIdle, false);
+        }
+
+        private void SetIdleAnimation()
+        {
+            animator.SetBool(IsWalking, false);
+            animator.SetBool(IsIdle, true);
+        }
+
+        private void Attack()
+        {
+            if (attackTimer > 0f)
+                return;
+
+            attackTimer = attackCooldown;
+            isAttacking = true;
+
+            animator.SetBool(IsWalking, false);
+            animator.SetBool(IsIdle, false);
+
+            int attackNumber = Random.Range(0, 2);
+
+            if (attackNumber == 0)
+            {
+                animator.SetTrigger(Attack1);
+            }
+            else
+            {
+                animator.SetTrigger(Attack2);
+            }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            if (isDead)
+                return;
+
+            base.TakeDamage(damage);
+
+            if (isDead)
+                return;
+
+            isHurt = true;
+            isAttacking = false;
+
+            animator.SetBool(IsWalking, false);
+            animator.SetBool(IsIdle, false);
+
+            animator.SetTrigger(Hurt);
+
+            CancelInvoke(nameof(EndHurt));
+            Invoke(nameof(EndHurt), 0.5f);
+        }
+
+        private void EndHurt()
+        {
+            if (isDead)
+                return;
+
+            isHurt = false;
+        }
+
+        protected override void Die()
+        {
+            if (isDead)
+                return;
+
+            isDead = true;
+            isAttacking = false;
+            isHurt = false;
+
+            CancelInvoke(nameof(EndHurt));
+
+            animator.SetBool(IsWalking, false);
+            animator.SetBool(IsIdle, false);
+
+            animator.SetTrigger(Death);
+
+            Destroy(gameObject, 2f);
+        }
+
+        public void FinishAttack()
+        {
+            isAttacking = false;
+        }
+
+        public void DealDamage()
+        {
+            if (isDead || !playerContext)
+                return;
+
+            float distance = Vector2.Distance(
+                transform.position,
+                playerContext.transform.position
             );
+
+            if (distance > attackDistance + 0.3f)
+                return;
+
+            playerContext.Health.TakeDamage(attackDamage);
         }
     }
 }

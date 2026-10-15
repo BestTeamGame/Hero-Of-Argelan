@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace Project.Scripts.PlayerScripts
 {
-    [RequireComponent(typeof(PlayerContext))]
+    [RequireComponent(typeof(PlayerStats))]
+    [RequireComponent(typeof(PlayerEffects))]
     public class PlayerInventory : MonoBehaviour
     {
         // Приватные поля
@@ -41,7 +42,8 @@ namespace Project.Scripts.PlayerScripts
         [SerializeField, Min(1)] private int maxManaPotions = 5;
         [SerializeField, Min(1)] private int maxArrows = 999;
         
-        private PlayerContext playerContext;
+        private PlayerStats stats;
+        private PlayerEffects effects;
         
         // Публичные поля
         
@@ -93,7 +95,8 @@ namespace Project.Scripts.PlayerScripts
 
         private void Awake()
         {
-            playerContext = GetComponent<PlayerContext>();
+            stats = GetComponent<PlayerStats>();
+            effects = GetComponent<PlayerEffects>();
         }
         
         // HealthPotions
@@ -255,12 +258,12 @@ namespace Project.Scripts.PlayerScripts
 
             foreach (StatModifier modifier in item.StatModifiers)
             {
-                playerContext.Stats.AddModifier(modifier);
+                stats.AddModifier(modifier);
             }
 
             foreach (ItemEffect effect in item.ItemEffects)
             {
-                playerContext.Effects.AddEffect(effect);
+                effects.AddEffect(effect);
             }
         }
         
@@ -275,12 +278,12 @@ namespace Project.Scripts.PlayerScripts
 
             foreach (StatModifier modifier in item.StatModifiers)
             {
-                playerContext.Stats.RemoveModifier(modifier);
+                stats.RemoveModifier(modifier);
             }
 
             foreach (ItemEffect effect in item.ItemEffects)
             {
-                playerContext.Effects.RemoveEffect(effect);
+                effects.RemoveEffect(effect);
             }
         }
         

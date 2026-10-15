@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Stats;
 using UnityEngine;
@@ -27,6 +28,8 @@ namespace Project.Scripts.PlayerScripts
         [SerializeField, Min(1f)] private float baseCritMultiplier = 1.5f;
 
         private readonly List<StatModifier> modifiers = new();
+        
+        public event Action<StatType> StatChanged;
 
         public void AddModifier(StatModifier modifier)
         {
@@ -34,6 +37,8 @@ namespace Project.Scripts.PlayerScripts
                 return;
 
             modifiers.Add(modifier);
+            
+            StatChanged?.Invoke(modifier.StatType);
         }
 
         public bool RemoveModifier(StatModifier modifier)
@@ -41,7 +46,12 @@ namespace Project.Scripts.PlayerScripts
             if (modifier == null)
                 return false;
 
-            return modifiers.Remove(modifier);
+            if (!modifiers.Remove(modifier))
+                return false;
+
+            StatChanged?.Invoke(modifier.StatType);
+
+            return true;
         }
 
         public float GetStat(StatType stat)

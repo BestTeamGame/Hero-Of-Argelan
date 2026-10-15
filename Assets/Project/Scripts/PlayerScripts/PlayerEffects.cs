@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Project.Scripts.PlayerScripts
 {
-    [RequireComponent(typeof(PlayerContext))]
     public class PlayerEffects : MonoBehaviour
     {
         private PlayerContext context;
