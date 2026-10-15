@@ -1,0 +1,739 @@
+fileFormatVersion: 2
+guid: 8063d3613d7c2744f976e4aac3d19fd7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2752677570131296368
+    second: Dead_anin_0
+  - first:
+      213: -7187084846988961743
+    second: Dead_anin_1
+  - first:
+      213: -8162589282257595919
+    second: Dead_anin_2
+  - first:
+      213: -8958642717688696281
+    second: Dead_anin_3
+  - first:
+      213: 7254148425116814026
+    second: Dead_anin_4
+  - first:
+      213: -8209734605134524516
+    second: Dead_anin_5
+  - first:
+      213: -7676274545486798449
+    second: Dead_anin_6
+  - first:
+      213: -1757602260115192587
+    second: Dead_anin_7
+  - first:
+      213: -3965076857344461726
+    second: Dead_anin_8
+  - first:
+      213: 8087239275314989009
+    second: Dead_anin_9
+  - first:
+      213: 5124926992236636417
+    second: Dead_anin_10
+  - first:
+      213: 1000333006922845547
+    second: Dead_anin_11
+  - first:
+      213: -1645935973408497199
+    second: Dead_anin_12
+  - first:
+      213: -3253863016195834924
+    second: Dead_anin_13
+  - first:
+      213: 8183292479567515952
+    second: Dead_anin_14
+  - first:
+      213: -8619923052201247513
+    second: Dead_anin_15
+  - first:
+      213: -3402265599394419889
+    second: Dead_anin_16
+  - first:
+      213: 3114681970631962110
+    second: Dead_anin_17
+  - first:
+      213: -6464723349712112127
+    second: Dead_anin_18
+  - first:
+      213: 2459211277210418402
+    second: Dead_anin_19
+  - first:
+      213: -5243863554896055227
+    second: Dead_anin_20
+  - first:
+      213: 6739011637104703514
+    second: Dead_anin_21
+  - first:
+      213: 7767110605308991889
+    second: Dead_anin_22
+  - first:
+      213: 5891360408502130973
+    second: Dead_anin_23
+  - first:
+      213: -6452175034975169088
+    second: Dead_anin_24
+  - first:
+      213: -8175452489565908074
+    second: Dead_anin_25
+  - first:
+      213: 8906382540693621786
+    second: Dead_anin_26
+  - first:
+      213: 2729055203640343324
+    second: Dead_anin_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dead_anin_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 251
+        width: 54
+        height: 58
+      alignment: 9
+      pivot: {x: 0.5135209, y: 0.17270003}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 119e8200ae0520f46b437ea945558d69
+      internalID: 2752677570131296368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_1
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 248
+        width: 59
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5495004, y: 0.22185504}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b04da195c93f3994d8a83e2df91bb3a2
+      internalID: -7187084846988961743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_2
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 253
+        width: 59
+        height: 57
+      alignment: 9
+      pivot: {x: 0.59281325, y: 0.17976728}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03f74ba12a97aed4db7c40f738c54822
+      internalID: -8162589282257595919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_3
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 254
+        width: 55
+        height: 56
+      alignment: 9
+      pivot: {x: 0.5265503, y: 0.15449142}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 885fb24976b6d7f47af17141280df6df
+      internalID: -8958642717688696281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_4
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 250
+        width: 51
+        height: 62
+      alignment: 9
+      pivot: {x: 0.5214742, y: 0.1761514}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebf0f79621702f7458eddc56e3a89f94
+      internalID: 7254148425116814026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_5
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 247
+        width: 58
+        height: 65
+      alignment: 9
+      pivot: {x: 0.5125885, y: 0.1967149}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76e3e81d44f653d4ab5d06142beac81f
+      internalID: -8209734605134524516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_6
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 245
+        width: 66
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5774379, y: 0.23344398}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d50adadf8beb178418bd13145e87b90e
+      internalID: -7676274545486798449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_7
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 247
+        width: 71
+        height: 61
+      alignment: 9
+      pivot: {x: 0.55655897, y: 0.23068938}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54626a0465ae40843872590de772d376
+      internalID: -1757602260115192587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_8
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 171
+        width: 51
+        height: 60
+      alignment: 9
+      pivot: {x: 0.52340716, y: 0.18166326}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2ecbd58d1fb5b4439dac969100b5582
+      internalID: -3965076857344461726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_9
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 169
+        width: 63
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5631623, y: 0.20945449}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 294b76879e9c36e44be207e25ab7724f
+      internalID: 8087239275314989009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_10
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 168
+        width: 66
+        height: 66
+      alignment: 9
+      pivot: {x: 0.62661165, y: 0.22266111}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5be60851e94d1743b6b19fbc60b45b5
+      internalID: 5124926992236636417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_11
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 166
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.43563035, y: 0.21326268}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b1d06655627fa446acb199a69c0d529
+      internalID: 1000333006922845547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_12
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 163
+        width: 69
+        height: 72
+      alignment: 9
+      pivot: {x: 0.47693226, y: 0.19603242}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08e3833fa03d0b5408824a722c76d638
+      internalID: -1645935973408497199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_13
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 167
+        width: 68
+        height: 65
+      alignment: 9
+      pivot: {x: 0.45318604, y: 0.2061507}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f4c3841fe6d7fb4e807d9e0f3744bad
+      internalID: -3253863016195834924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_14
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 172
+        width: 53
+        height: 59
+      alignment: 9
+      pivot: {x: 0.55255705, y: 0.16277869}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d11e4abdd0c9ebe46b0928e70b849428
+      internalID: 8183292479567515952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_15
+      rect:
+        serializedVersion: 2
+        x: 566
+        y: 173
+        width: 60
+        height: 56
+      alignment: 9
+      pivot: {x: 0.5596883, y: 0.16603062}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1d5c7e6085c8e44c9db0f6d68b769c5
+      internalID: -8619923052201247513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_16
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 92
+        width: 54
+        height: 54
+      alignment: 9
+      pivot: {x: 0.50000006, y: 0.1450177}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a923a701558ffc47b5c12999ee2139b
+      internalID: -3402265599394419889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_17
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 93
+        width: 53
+        height: 49
+      alignment: 9
+      pivot: {x: 0.60637665, y: 0.16057229}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c697e808a8fdd8489876bef7dc74926
+      internalID: 3114681970631962110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_18
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 12
+        width: 48
+        height: 53
+      alignment: 9
+      pivot: {x: 0.5247152, y: 0.13290672}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0462a22b15e0333459b8a8c359c9b01f
+      internalID: -6464723349712112127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_19
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 10
+        width: 54
+        height: 54
+      alignment: 9
+      pivot: {x: 0.6098459, y: 0.17485583}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55f7f9f9fe42a6342884964f7a765196
+      internalID: 2459211277210418402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_20
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 12
+        width: 60
+        height: 56
+      alignment: 9
+      pivot: {x: 0.61072487, y: 0.11867727}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9874daee1cd0ef4bb7736cccdea7104
+      internalID: -5243863554896055227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_21
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 14
+        width: 44
+        height: 57
+      alignment: 9
+      pivot: {x: 0.56470907, y: 0.13785489}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5cd466f5d2145b4a897902dcf30ad53
+      internalID: 6739011637104703514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead_anin_22
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 17
+        width: 52
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5684427, y: 0.11334151}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fb1bb1b6dc3e36488216c0e476c2366
+      internalID: 7767110605308991889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 195c0714be7288b4c9287271d63bbd2e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":9.0,"y":9.0},"gridSpriteSize":{"x":8.0,"y":8.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":1.0,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":8,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Dead_anin_0: 2752677570131296368
+      Dead_anin_1: -7187084846988961743
+      Dead_anin_10: 5124926992236636417
+      Dead_anin_11: 1000333006922845547
+      Dead_anin_12: -1645935973408497199
+      Dead_anin_13: -3253863016195834924
+      Dead_anin_14: 8183292479567515952
+      Dead_anin_15: -8619923052201247513
+      Dead_anin_16: -3402265599394419889
+      Dead_anin_17: 3114681970631962110
+      Dead_anin_18: -6464723349712112127
+      Dead_anin_19: 2459211277210418402
+      Dead_anin_2: -8162589282257595919
+      Dead_anin_20: -5243863554896055227
+      Dead_anin_21: 6739011637104703514
+      Dead_anin_22: 7767110605308991889
+      Dead_anin_23: 5891360408502130973
+      Dead_anin_24: -6452175034975169088
+      Dead_anin_25: -8175452489565908074
+      Dead_anin_26: 8906382540693621786
+      Dead_anin_27: 2729055203640343324
+      Dead_anin_3: -8958642717688696281
+      Dead_anin_4: 7254148425116814026
+      Dead_anin_5: -8209734605134524516
+      Dead_anin_6: -7676274545486798449
+      Dead_anin_7: -1757602260115192587
+      Dead_anin_8: -3965076857344461726
+      Dead_anin_9: 8087239275314989009
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

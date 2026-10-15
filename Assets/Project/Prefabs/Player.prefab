@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 4410269676416153077}
   - component: {fileID: 2769636138853726657}
   - component: {fileID: 2243614405572042097}
-  - component: {fileID: 767657233770655657}
   - component: {fileID: 8735518072922659058}
   - component: {fileID: 2233610001473002190}
   m_Layer: 6
@@ -191,7 +190,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 5b1fbcde4d6d0144a8694b51944df9f9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -227,43 +226,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.4744892, y: 0.8684263}
   m_EdgeRadius: 0
---- !u!70 &767657233770655657
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7608992663033205890}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.0001, y: 0.0001}
-  m_Direction: 0
 --- !u!114 &8735518072922659058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,7 +276,7 @@ MonoBehaviour:
   arrowPoint: {fileID: 8213144755484499960}
   arrowPrefab: {fileID: 2456106193020761419, guid: 0a120093bdcd46846813b286a93272c6, type: 3}
   arrowSpeed: 12
-  arrowDamage: 25
+  arrowDamage: 111
   bowCooldown: 2
 --- !u!1 &8294788800459692918
 GameObject:
@@ -341,7 +303,7 @@ Transform:
   m_GameObject: {fileID: 8294788800459692918}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.304, y: 0.262, z: 0}
+  m_LocalPosition: {x: 0.45, y: 0.39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
