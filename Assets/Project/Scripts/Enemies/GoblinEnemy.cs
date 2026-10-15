@@ -1,3 +1,4 @@
+
 using Project.Scripts;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class GoblinEnemy : Enemy
     public float groundCheckDistance = 0.2f;
     public LayerMask groundLayer;
     public float wallCheckDistance = 0.3f;
+    public float edgeCheckDistance = 0.3f;
 
     [Header("Dagger Attack")]
     public int daggerDamage = 15;
@@ -51,7 +53,7 @@ public class GoblinEnemy : Enemy
         bodyCollider = GetComponent<Collider2D>();
 
         if (animator == null)
-            animator = GetComponent<Animator>();
+            animator = GetComponentInChildren<Animator>();
 
         if (player == null)
         {
@@ -94,6 +96,27 @@ public class GoblinEnemy : Enemy
             return;
         }
 
+        // Гоблин не бежит за игроком на другой высоте,
+        // но при готовности может атаковать его бомбой.
+        if (!IsPlayerOnReachableHeight(player))
+        {
+            StopHorizontalMovement();
+
+            if (bombTimer <= 0f &&
+                bombPrefab != null &&
+                bombSpawnPoint != null)
+            {
+                FacePlayer();
+                ThrowBomb();
+            }
+            else
+            {
+                SetIdle();
+            }
+
+            return;
+        }
+
         FacePlayer();
 
         if (distance <= daggerDistance)
@@ -101,8 +124,9 @@ public class GoblinEnemy : Enemy
             StopHorizontalMovement();
             AttackWithDagger();
         }
-        else if (bombTimer <= 0f && bombPrefab != null
-                 && bombSpawnPoint != null)
+        else if (bombTimer <= 0f &&
+                 bombPrefab != null &&
+                 bombSpawnPoint != null)
         {
             StopHorizontalMovement();
             ThrowBomb();
@@ -118,8 +142,7 @@ public class GoblinEnemy : Enemy
         if (isDead || rb == null)
             return;
 
-        if (isHurt || isAttacking || isThrowingBomb
-            || player == null)
+        if (isHurt || isAttacking || isThrowingBomb || player == null)
         {
             StopHorizontalMovement();
             return;
@@ -130,22 +153,20 @@ public class GoblinEnemy : Enemy
             player.position
         );
 
-        if (distance > detectionDistance
-            || distance <= daggerDistance
-            || (bombTimer <= 0f && bombPrefab != null
-                && bombSpawnPoint != null))
+        if (!IsPlayerOnReachableHeight(player) ||
+            distance > detectionDistance ||
+            distance <= daggerDistance ||
+            (bombTimer <= 0f &&
+             bombPrefab != null &&
+             bombSpawnPoint != null))
         {
             StopHorizontalMovement();
             return;
         }
 
-        if (!IsGrounded())
-        {
-            StopHorizontalMovement();
-            return;
-        }
-
-        if (IsWallAhead())
+        // Не двигаемся, если под ногами нет земли,
+        // впереди край платформы или стена.
+        if (!IsGrounded() || !IsGroundAhead() || IsWallAhead())
         {
             StopHorizontalMovement();
             return;
@@ -189,6 +210,25 @@ public class GoblinEnemy : Enemy
         );
 
         return groundHit.collider != null;
+    }
+
+    private bool IsGroundAhead()
+    {
+        if (groundCheck == null)
+            return true;
+
+        // Проверяем пол немного впереди ног по направлению движения.
+        Vector2 origin = (Vector2)groundCheck.position +
+            Vector2.right * facingDirection * edgeCheckDistance;
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            origin,
+            Vector2.down,
+            groundCheckDistance,
+            groundLayer
+        );
+
+        return hit.collider != null;
     }
 
     private bool IsWallAhead()
@@ -240,10 +280,9 @@ public class GoblinEnemy : Enemy
         else if (directionX < -0.05f)
             facingDirection = -1;
 
+
         Vector3 scale = transform.localScale;
-
         scale.x = Mathf.Abs(scale.x) * facingDirection;
-
         transform.localScale = scale;
     }
 
@@ -269,6 +308,7 @@ public class GoblinEnemy : Enemy
 
         animator.SetBool("Run", false);
         animator.SetBool("Idle", false);
+
         animator.SetTrigger("Attack");
     }
 
@@ -282,10 +322,13 @@ public class GoblinEnemy : Enemy
         animator.SetTrigger("Attack2");
     }
 
+    // Вызывается Animation Event в кадре удара кинжалом.
     public void DealDaggerDamage()
     {
-        if (isDead || !isAttacking || daggerDamageDealt
-            || player == null)
+        if (isDead || !isAttacking || daggerDamageDealt || player == null)
+            return;
+
+        if (!IsPlayerOnReachableHeight(player))
             return;
 
         float distance = Vector2.Distance(
@@ -306,9 +349,11 @@ public class GoblinEnemy : Enemy
         }
     }
 
+    // Вызывается Animation Event в момент выпуска бомбы.
     public void SpawnBomb()
     {
-        if (isDead || !isThrowingBomb || bombPrefab == null)
+        if (isDead || !isThrowingBomb ||
+            bombPrefab == null || bombSpawnPoint == null)
             return;
 
         GameObject bomb = Instantiate(
@@ -331,11 +376,13 @@ public class GoblinEnemy : Enemy
         bombScript.SetTarget(player, this);
     }
 
+    // Animation Event в конце анимации удара.
     public void FinishDaggerAttack()
     {
         isAttacking = false;
     }
 
+    // Animation Event в конце анимации броска.
     public void FinishBombAttack()
     {
         isThrowingBomb = false;
@@ -393,11 +440,14 @@ public class GoblinEnemy : Enemy
             rb.simulated = false;
         }
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Idle", false);
-        animator.ResetTrigger("Attack");
-        animator.ResetTrigger("Attack2");
-        animator.SetTrigger("Death");
+        if (animator != null)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("Idle", false);
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("Attack2");
+            animator.SetTrigger("Death");
+        }
 
         Destroy(gameObject, 2f);
     }

@@ -1,13 +1,22 @@
+
 using Project.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class ReaperBoss : Enemy
 {
     [Header("Movement")]
     public float moveSpeed = 1.5f;
     public float detectionDistance = 10f;
     public float attackDistance = 2f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+    public float groundCheckDistance = 0.3f;
+    public float edgeCheckDistance = 0.3f;
+    public float wallCheckDistance = 0.2f;
 
     [Header("Attack")]
     public int attackDamage = 40;
@@ -22,23 +31,24 @@ public class ReaperBoss : Enemy
     public float hurtDuration = 0.5f;
     public float destroyDelay = 2f;
 
+    private Rigidbody2D rb;
+    private Collider2D bodyCollider;
+
     private float attackTimer;
     private bool isAttacking;
     private bool isHurt;
+
+    private int facingDirection = 1;
 
     protected override void Start()
     {
         base.Start();
 
-        if (animator == null)
-        {
-            animator = GetComponent<Animator>();
-        }
+        rb = GetComponent<Rigidbody2D>();
+        bodyCollider = GetComponent<Collider2D>();
 
         if (animator == null)
-        {
             animator = GetComponentInChildren<Animator>();
-        }
 
         if (player == null)
         {
@@ -46,16 +56,13 @@ public class ReaperBoss : Enemy
                 GameObject.FindGameObjectWithTag("Player");
 
             if (playerObject != null)
-            {
                 player = playerObject.transform;
-            }
         }
 
-        if (healthSlider != null)
-        {
-            healthSlider.maxValue = maxHealth;
-            healthSlider.value = currentHealth;
-        }
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.freezeRotation = true;
+
+        UpdateHealthBar();
     }
 
     private void Update()
@@ -63,8 +70,9 @@ public class ReaperBoss : Enemy
         if (isDead)
             return;
 
-        if (player == null)
+        if (player == null || animator == null)
         {
+            StopHorizontalMovement();
             SetWalkingAnimation(false);
             return;
         }
@@ -74,57 +82,152 @@ public class ReaperBoss : Enemy
         if (isHurt || isAttacking)
             return;
 
-        UpdateHealthBar();
+        float distance = Vector2.Distance(
+            transform.position,
+            player.position
+        );
+
+        if (distance > detectionDistance)
+        {
+            StopHorizontalMovement();
+            SetWalkingAnimation(false);
+            return;
+        }
+
+        // Жнец не преследует игрока, если тот находится
+        // слишком высоко или низко относительно босса.
+        if (!IsPlayerOnReachableHeight(player))
+        {
+            StopHorizontalMovement();
+            SetWalkingAnimation(false);
+            return;
+        }
+
+        FacePlayer();
+
+        if (distance <= attackDistance)
+        {
+            StopHorizontalMovement();
+            Attack();
+        }
+        else
+        {
+            MoveToPlayer();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isDead || rb == null)
+            return;
+
+        if (isAttacking || isHurt || player == null)
+        {
+            StopHorizontalMovement();
+            return;
+        }
 
         float distance = Vector2.Distance(
             transform.position,
             player.position
         );
 
-        if (distance <= attackDistance)
+        // Проверяем высоту, расстояние и препятствия перед движением.
+        if (distance > detectionDistance ||
+            distance <= attackDistance ||
+            !IsPlayerOnReachableHeight(player) ||
+            !IsGroundAhead() ||
+            IsWallAhead())
         {
-            Attack();
-        }
-        else if (distance <= detectionDistance)
-        {
-            MoveToPlayer();
-        }
-        else
-        {
-            SetWalkingAnimation(false);
+            StopHorizontalMovement();
         }
     }
 
     private void MoveToPlayer()
     {
-        Vector3 direction =
-            player.position - transform.position;
-
-        direction.y = 0f;
-
-        if (direction.x > 0f)
+        // Не позволяем боссу сходить с края или идти сквозь стену.
+        if (!IsGroundAhead() || IsWallAhead())
         {
-            transform.localScale = new Vector3(
-                Mathf.Abs(transform.localScale.x),
-                transform.localScale.y,
-                transform.localScale.z
-            );
-        }
-        else if (direction.x < 0f)
-        {
-            transform.localScale = new Vector3(
-                -Mathf.Abs(transform.localScale.x),
-                transform.localScale.y,
-                transform.localScale.z
-            );
+            StopHorizontalMovement();
+            SetWalkingAnimation(false);
+            return;
         }
 
-        transform.position +=
-            direction.normalized *
-            moveSpeed *
-            Time.deltaTime;
+        if (rb != null)
+        {
+            rb.linearVelocity = new Vector2(
+                facingDirection * moveSpeed,
+                rb.linearVelocity.y
+            );
+        }
 
         SetWalkingAnimation(true);
+    }
+
+    private void FacePlayer()
+    {
+        float directionX = player.position.x - transform.position.x;
+
+        if (directionX > 0.05f)
+            facingDirection = 1;
+        else if (directionX < -0.05f)
+            facingDirection = -1;
+
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * facingDirection;
+        transform.localScale = scale;
+    }
+
+    private bool IsGroundAhead()
+    {
+        if (groundCheck == null)
+            return true;
+
+        // Проверяем наличие платформы немного впереди ног.
+        Vector2 origin = (Vector2)groundCheck.position +
+            Vector2.right * facingDirection * edgeCheckDistance;
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            origin,
+            Vector2.down,
+            groundCheckDistance,
+            groundLayer
+        );
+
+        return hit.collider != null;
+    }
+
+    private bool IsWallAhead()
+    {
+        if (bodyCollider == null)
+            return false;
+
+        Bounds bounds = bodyCollider.bounds;
+
+        Vector2 origin = new Vector2(
+            bounds.center.x,
+            bounds.center.y
+        );
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            origin,
+            Vector2.right * facingDirection,
+            bounds.extents.x + wallCheckDistance,
+            groundLayer
+        );
+
+        return hit.collider != null;
+    }
+
+    private void StopHorizontalMovement()
+    {
+        if (rb == null)
+            return;
+
+        rb.linearVelocity = new Vector2(
+            0f,
+            rb.linearVelocity.y
+        );
     }
 
     private void SetWalkingAnimation(bool walking)
@@ -143,12 +246,10 @@ public class ReaperBoss : Enemy
         attackTimer = attackCooldown;
         isAttacking = true;
 
+        StopHorizontalMovement();
         SetWalkingAnimation(false);
 
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack");
-        }
+        animator.SetTrigger("Attack");
     }
 
     public override void TakeDamage(int damage)
@@ -166,14 +267,11 @@ public class ReaperBoss : Enemy
         isHurt = true;
         isAttacking = false;
 
+        StopHorizontalMovement();
         CancelInvoke(nameof(EndHurt));
 
         SetWalkingAnimation(false);
-
-        if (animator != null)
-        {
-            animator.SetTrigger("Hurt");
-        }
+        animator.SetTrigger("Hurt");
 
         Invoke(nameof(EndHurt), hurtDuration);
     }
@@ -196,30 +294,35 @@ public class ReaperBoss : Enemy
         isHurt = false;
 
         CancelInvoke(nameof(EndHurt));
+        StopHorizontalMovement();
+
+        if (rb != null)
+            rb.simulated = false;
 
         SetWalkingAnimation(false);
 
         if (healthSlider != null)
-        {
             healthSlider.value = 0;
-        }
 
         if (animator != null)
-        {
             animator.SetTrigger("Death");
-        }
 
         Destroy(gameObject, destroyDelay);
     }
 
+    // Animation Event в конце анимации атаки.
     public void FinishAttack()
     {
         isAttacking = false;
     }
 
+    // Animation Event в кадре попадания оружия.
     public void DealDamage()
     {
-        if (isDead || player == null)
+        if (isDead || !isAttacking || player == null)
+            return;
+
+        if (!IsPlayerOnReachableHeight(player))
             return;
 
         float distance = Vector2.Distance(
@@ -230,29 +333,19 @@ public class ReaperBoss : Enemy
         if (distance > attackDistance + 0.3f)
             return;
 
-        Player playerComponent =
-            player.GetComponent<Player>();
+        Player playerComponent = player.GetComponent<Player>();
 
         if (playerComponent == null)
-        {
-            playerComponent =
-                player.GetComponentInParent<Player>();
-        }
+            playerComponent = player.GetComponentInParent<Player>();
 
         if (playerComponent != null)
         {
-            Debug.Log(
-                "Reaper наносит игроку урон: " +
-                attackDamage
-            );
-
+            Debug.Log("Reaper наносит игроку урон: " + attackDamage);
             playerComponent.TakeDamage(attackDamage);
         }
         else
         {
-            Debug.LogWarning(
-                "Player не найден!"
-            );
+            Debug.LogWarning("Player не найден!");
         }
     }
 
