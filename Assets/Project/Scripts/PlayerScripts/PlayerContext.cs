@@ -12,32 +12,30 @@ namespace Project.Scripts.PlayerScripts
         typeof(PlayerMovement),
         typeof(PlayerInventory)
     )]
-    [RequireComponent(typeof(PlayerEffects))]
+    [RequireComponent(
+        typeof(PlayerEffects),
+        typeof(PlayerCombat))]
     public class PlayerContext : MonoBehaviour
     {
         public PlayerMovement Movement { get; private set; }
         public PlayerHealth Health { get; private set; }
         public PlayerMana Mana { get; private set; }
-
         public PlayerStats Stats { get; private set; }
-
         public PlayerInventory Inventory { get; private set; }
         public PlayerEffects Effects { get; private set; }
-
         public PlayerCombatEvents CombatEvents { get; private set; }
+        public PlayerCombat Combat { get; private set; }
 
         private void Awake()
         {
             Movement = GetComponent<PlayerMovement>();
             Health = GetComponent<PlayerHealth>();
             Mana = GetComponent<PlayerMana>();
-
             Stats = GetComponent<PlayerStats>();
-
             Inventory = GetComponent<PlayerInventory>();
             Effects = GetComponent<PlayerEffects>();
-
             CombatEvents = GetComponent<PlayerCombatEvents>();
+            Combat = GetComponent<PlayerCombat>();
         }
     }
 }
