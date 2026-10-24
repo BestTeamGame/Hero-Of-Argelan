@@ -51,7 +51,7 @@ namespace Project.Scripts
                 return;
 
 
-            input.Player.Attack.performed += OnAttack;
+            // input.Player.Attack.performed += OnAttack;
 
 
             input.Player.BowAttack.performed += OnBowAttack;
@@ -61,7 +61,7 @@ namespace Project.Scripts
         {
             if (input != null)
             {
-                input.Player.Attack.performed -= OnAttack;
+                // input.Player.Attack.performed -= OnAttack;
                 input.Player.BowAttack.performed -= OnBowAttack;
             }
 
@@ -120,7 +120,7 @@ namespace Project.Scripts
                 if (enemy != null)
                 {
                     Debug.Log(
-                        "Ударили: " +
+                        "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " +
                         enemy.name
                     );
 
@@ -143,7 +143,7 @@ namespace Project.Scripts
             if (arrowPrefab == null)
             {
                 Debug.LogWarning(
-                    "Arrow Prefab не назначен!"
+                    "Arrow Prefab пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!"
                 );
 
                 return;
@@ -152,7 +152,7 @@ namespace Project.Scripts
             if (arrowPoint == null)
             {
                 Debug.LogWarning(
-                    "Arrow Point не назначен!"
+                    "Arrow Point пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!"
                 );
 
                 return;
