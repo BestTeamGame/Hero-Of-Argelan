@@ -1,11 +1,35 @@
+using Project.Scripts.Combat;
+using Project.Scripts.PlayerScripts;
+using Project.Scripts.Stats;
 using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
-    public class MagicWeaponData: WeaponData
+    public abstract class MagicWeaponData : WeaponData
     {
-        [SerializeField] private int manaCost;
+        [SerializeField, Min(0f)]
+        private float manaCost;
+
+        public float ManaCost => manaCost;
+
+        public override StatType DamageStat =>
+            StatType.MagicDamage;
+
+        public override bool CanUse(
+            PlayerContext context)
+        {
+            return context.Mana.CurrentMana >= manaCost;
+        }
+
+        public override bool TryConsumeResources(
+            PlayerContext context)
+        {
+            return context.Mana.Spend(manaCost);
+        }
         
-        public int ManaCost => manaCost;
+        public override void Attack(WeaponAttackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
