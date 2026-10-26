@@ -15,6 +15,12 @@ public class GoblinBomb : MonoBehaviour
     public float arcHeight = 3f;
     public float gravityScale = 1.2f;
 
+    [Tooltip("Случайное отклонение точки приземления по горизонтали")]
+    public float horizontalAccuracy = 1.2f;
+
+    [Tooltip("Случайное отклонение точки приземления по высоте")]
+    public float verticalAccuracy = 0.4f;
+
     [Header("Взрыв")]
     public float explosionDuration = 0.6f;
     public Animator animator;
@@ -40,6 +46,9 @@ public class GoblinBomb : MonoBehaviour
         if (target == null || rb == null)
             return;
 
+        exploded = false;
+        damageApplied = false;
+
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.simulated = true;
         rb.gravityScale = gravityScale;
@@ -50,9 +59,24 @@ public class GoblinBomb : MonoBehaviour
         IgnoreOwnerCollisions();
         IgnorePlayerCollisions(target);
 
+        // Запоминаем положение игрока только в момент броска.
         Vector2 start = transform.position;
         Vector2 end = target.position;
 
+        // Добавляем погрешность, чтобы бомбы не летели
+        // каждый раз точно в одну и ту же точку.
+        end.x += Random.Range(
+            -horizontalAccuracy,
+            horizontalAccuracy
+        );
+
+        end.y += Random.Range(
+            -verticalAccuracy,
+            verticalAccuracy
+        );
+
+        // Вычисляем траекторию один раз.
+        // После броска движение игрока уже не влияет на бомбу.
         float gravity = Mathf.Abs(
             Physics2D.gravity.y * rb.gravityScale
         );
@@ -69,12 +93,17 @@ public class GoblinBomb : MonoBehaviour
         float timeDown = Mathf.Sqrt(2f * heightDown / gravity);
         float flightTime = timeUp + timeDown;
 
+        // Рассчитываем горизонтальную скорость до выбранной точки.
         float velocityX = (end.x - start.x) / flightTime;
+
+        // Дополнительная случайная погрешность скорости по горизонтали.
+        velocityX += Random.Range(-0.6f, 0.6f);
 
         rb.linearVelocity = new Vector2(velocityX, velocityY);
 
+        // Разворачиваем спрайт в сторону броска.
         Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(end.x - start.x);
+        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(velocityX);
         transform.localScale = scale;
     }
 
@@ -162,17 +191,15 @@ public class GoblinBomb : MonoBehaviour
         if (exploded || other == null)
             return;
 
-        // При касании игрока бомба не наносит урон
-        // и не запускает взрыв.
+        // При касании игрока не взрываем бомбу.
         if (IsPlayer(other))
             return;
 
-        // Не взрываемся при столкновении с самим гоблином.
+        // Игнорируем столкновения с гоблином.
         if (owner != null &&
             other.GetComponentInParent<GoblinEnemy>() == owner)
             return;
 
-        // Остальные столкновения запускают анимацию взрыва.
         Explode();
     }
 
@@ -199,16 +226,12 @@ public class GoblinBomb : MonoBehaviour
         }
 
         if (animator != null)
-        {
             animator.SetTrigger("Explode");
-        }
 
-        // Урон здесь НЕ наносится.
-        // Его нанесёт Animation Event.
+        // Уничтожаем бомбу после завершения анимации.
         Destroy(gameObject, explosionDuration);
     }
 
-    // Добавить как Animation Event на кадр взрыва.
     public void DealExplosionDamage()
     {
         if (!exploded || damageApplied)
@@ -235,9 +258,7 @@ public class GoblinBomb : MonoBehaviour
                 continue;
 
             if (damagedPlayers.Add(playerComponent))
-            {
                 playerComponent.TakeDamage(damage);
-            }
         }
     }
 
