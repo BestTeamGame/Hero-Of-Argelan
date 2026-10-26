@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace Project.Scripts
 {
+    // TODO: РЈСЃС‚Р°СЂРµРІС€РёР№ РєР»Р°СЃСЃ, РїРѕСЃР»Рµ РїРµСЂРµС…РѕРґР° РЅР° РЅРѕРІСѓСЋ Р°СЂС…РёС‚РµРєС‚СѓСЂСѓ - СѓРґР°Р»РёС‚СЊ.
     [RequireComponent(typeof(Rigidbody2D))]
     public class Player : MonoBehaviour
     {
@@ -173,9 +174,9 @@ namespace Project.Scripts
                 currentHealth = 0;
 
             Debug.Log(
-                "Игрок получил урон: " +
+                "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: " +
                 damage +
-                ". Здоровье: " +
+                ". пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " +
                 currentHealth +
                 "/" +
                 maxHealth
@@ -203,7 +204,7 @@ namespace Project.Scripts
                 currentHealth = maxHealth;
 
             Debug.Log(
-                "Игрок восстановил здоровье: " +
+                "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " +
                 currentHealth +
                 "/" +
                 maxHealth
@@ -228,7 +229,7 @@ namespace Project.Scripts
                 animator.SetTrigger(Death);
             }
 
-            Debug.Log("Игрок умер");
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ");
         }
 
         public int GetCurrentHealth()

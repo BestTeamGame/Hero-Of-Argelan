@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Project.Scripts
+namespace Project.Scripts.PlayerScripts
 {
+    // TODO: Устаревший класс, после перехода на новую архитектуру - удалить.
     public class PlayerSoldier : Player
     {
         private static readonly int Attack =
