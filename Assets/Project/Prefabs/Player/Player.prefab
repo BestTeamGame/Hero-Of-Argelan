@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.PlayerScripts.PlayerInventory
   weaponSlot1: {fileID: 11400000, guid: 7b7f5c7d08a048e4988b8acb47bcc9e7, type: 2}
-  weaponSlot2: {fileID: 0}
+  weaponSlot2: {fileID: 11400000, guid: 91d5092093c64d27b83a60fa6e1baa93, type: 2}
   activeSkill: {fileID: 0}
   headArmor: {fileID: 0}
   bodyArmor: {fileID: 0}

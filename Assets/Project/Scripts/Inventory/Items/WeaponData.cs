@@ -13,10 +13,15 @@ namespace Project.Scripts.Inventory.Items
 
         [SerializeField, Min(0.01f)]
         private float attackCooldown;
+        
+        [SerializeField]
+        private string attackAnimationTrigger = "Attack";
 
         public float BaseDamage => baseDamage;
 
         public float AttackCooldown => attackCooldown;
+        
+        public string AttackAnimationTrigger => attackAnimationTrigger;
 
         public abstract StatType DamageStat { get; }
 

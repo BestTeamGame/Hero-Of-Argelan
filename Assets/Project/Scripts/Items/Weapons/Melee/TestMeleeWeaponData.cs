@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Project.Scripts.Combat;
 using Project.Scripts.Inventory.Items;
-using Project.Scripts.Stats;
 using UnityEngine;
 
 namespace Project.Scripts.Items.Weapons.Melee
@@ -10,7 +9,7 @@ namespace Project.Scripts.Items.Weapons.Melee
         menuName = "Project/Weapons/Test Melee Weapon",
         fileName = "TestMeleeWeapon"
     )]
-    public sealed class TestMeleeWeaponData : WeaponData
+    public sealed class TestMeleeWeaponData : MeleeWeaponData
     {
         [SerializeField, Min(0f)]
         private float radius = 0.6f;
@@ -20,8 +19,6 @@ namespace Project.Scripts.Items.Weapons.Melee
 
         [SerializeField]
         private LayerMask targetLayers = 1 << 7;
-
-        public override StatType DamageStat => StatType.MeleeDamage;
         
         private readonly Collider2D[] hitBuffer = new Collider2D[16];
         private readonly HashSet<Enemy> damagedEnemies = new();

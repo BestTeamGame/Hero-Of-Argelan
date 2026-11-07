@@ -17,10 +17,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   statModifiers: []
   itemEffects: []
-  baseDamage: 0
+  baseDamage: 25
   attackCooldown: 0
   radius: 0.6
   forwardOffset: 0.45
   targetLayers:
     serializedVersion: 2
     m_Bits: 128
+  swingEffectPrefab: {fileID: 5698473953972922609, guid: 7d6632bf2867139429cc43318a422466, type: 3}
+  hitEffectPrefab: {fileID: 0}

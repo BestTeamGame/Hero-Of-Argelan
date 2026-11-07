@@ -10,6 +10,7 @@ namespace Project.Scripts.PlayerScripts
     [RequireComponent(typeof(PlayerStats))]
     [RequireComponent(typeof(PlayerHealth))]
     [RequireComponent(typeof(PlayerCombatEvents))]
+    [RequireComponent(typeof(Animator))]
     public class PlayerCombat : MonoBehaviour
     {
         [Header("Attack")]
@@ -21,6 +22,7 @@ namespace Project.Scripts.PlayerScripts
         private PlayerStats stats;
         private PlayerHealth health;
         private PlayerCombatEvents combatEvents;
+        private Animator animator;
 
         private float weapon1NextAttackTime;
         private float weapon2NextAttackTime;
@@ -51,8 +53,9 @@ namespace Project.Scripts.PlayerScripts
             stats = GetComponent<PlayerStats>();
             health = GetComponent<PlayerHealth>();
 
-            combatEvents =
-                GetComponent<PlayerCombatEvents>();
+            combatEvents = GetComponent<PlayerCombatEvents>();
+            
+            animator = GetComponent<Animator>();
 
             if (!attackOrigin)
                 attackOrigin = transform;
@@ -108,6 +111,9 @@ namespace Project.Scripts.PlayerScripts
                 );
 
             weapon.Attack(attackContext);
+            
+            if (animator && !string.IsNullOrEmpty(weapon.AttackAnimationTrigger))
+                animator.SetTrigger(weapon.AttackAnimationTrigger);
 
             nextAttackTime =
                 GetNextAttackTime(weapon);
