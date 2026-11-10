@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Project.Scripts.Stats
 {
@@ -6,8 +7,8 @@ namespace Project.Scripts.Stats
     [Serializable]
     public class StatModifier
     {
-        private StatType statType;
-        private float value;
+        [SerializeField] private StatType statType;
+        [SerializeField] private float value;
         
         public float Value => value;
         public StatType StatType => statType;

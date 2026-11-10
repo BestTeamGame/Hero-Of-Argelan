@@ -12,17 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0fa54f30384b8ca9eaf9159a06561b, type: 3}
   m_Name: TestMeleeWeapon
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.Items.Weapons.Melee.TestMeleeWeaponData
-  itemName: 
-  description: 
+  itemName: "\u0422\u0435\u0441\u0442\u043E\u0432\u044B\u0439 \u043C\u0435\u0447"
+  description: "\u0410\u0442\u0430\u043A\u0443\u0435\u0442 \u043F\u043E \u043D\u0435\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043F\u0435\u0440\u0435\u0434 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u043C."
   icon: {fileID: 0}
   statModifiers: []
   itemEffects: []
   baseDamage: 25
-  attackCooldown: 0
+  attackCooldown: 0.5
+  attackAnimationTrigger: Attack
   radius: 0.6
   forwardOffset: 0.45
   targetLayers:
     serializedVersion: 2
     m_Bits: 128
-  swingEffectPrefab: {fileID: 5698473953972922609, guid: 7d6632bf2867139429cc43318a422466, type: 3}
-  hitEffectPrefab: {fileID: 0}
