@@ -1,11 +1,38 @@
+using Project.Scripts.Combat;
+using Project.Scripts.PlayerScripts;
+using Project.Scripts.Stats;
 using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
-    public class RangedWeaponData: WeaponData
+    public abstract class RangedWeaponData : WeaponData
     {
-        [SerializeField] private int arrowsPerShot = 1;
+        [SerializeField, Min(1)]
+        private int arrowCost = 1;
+
+        public int ArrowCost => arrowCost;
+
+        public override StatType DamageStat =>
+            StatType.RangedDamage;
+
+        public override bool CanUse(
+            PlayerContext context)
+        {
+            return context.Inventory.Arrows >=
+                   arrowCost;
+        }
+
+        public override bool TryConsumeResources(
+            PlayerContext context)
+        {
+            return context.Inventory.UseArrows(
+                arrowCost
+            );
+        }
         
-        public int ArrowsPerShot => arrowsPerShot;
+        public override void Attack(WeaponAttackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

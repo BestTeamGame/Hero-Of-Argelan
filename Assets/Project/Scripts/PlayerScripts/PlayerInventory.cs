@@ -6,14 +6,11 @@ using UnityEngine;
 
 namespace Project.Scripts.PlayerScripts
 {
-    [RequireComponent(typeof(PlayerContext))]
+    [RequireComponent(typeof(PlayerStats))]
+    [RequireComponent(typeof(PlayerEffects))]
     public class PlayerInventory : MonoBehaviour
     {
         // Приватные поля
-        
-        [Header("General")]
-        // Или получать в Awake, пока не уверен
-        [SerializeField] private PlayerContext playerContext;
         
         [Header("Weapons")]
         [SerializeField] private WeaponData weaponSlot1;
@@ -45,6 +42,9 @@ namespace Project.Scripts.PlayerScripts
         [SerializeField, Min(1)] private int maxManaPotions = 5;
         [SerializeField, Min(1)] private int maxArrows = 999;
         
+        private PlayerStats stats;
+        private PlayerEffects effects;
+        
         // Публичные поля
         
         public WeaponData WeaponSlot1 => weaponSlot1;
@@ -75,6 +75,30 @@ namespace Project.Scripts.PlayerScripts
         public event Action ResourcesChanged;
         public event Action KeyItemsChanged;
 
+        // Инициализация
+        
+        private void Start()
+        {
+            ApplyItem(weaponSlot1);
+            ApplyItem(weaponSlot2);
+
+            ApplyItem(activeSkill);
+
+            ApplyItem(headArmor);
+            ApplyItem(bodyArmor);
+
+            foreach (ArtifactData artifact in artifacts)
+            {
+                ApplyItem(artifact);
+            }
+        }
+
+        private void Awake()
+        {
+            stats = GetComponent<PlayerStats>();
+            effects = GetComponent<PlayerEffects>();
+        }
+        
         // HealthPotions
         
         private void SetHealthPotions(int amount)
@@ -234,12 +258,12 @@ namespace Project.Scripts.PlayerScripts
 
             foreach (StatModifier modifier in item.StatModifiers)
             {
-                // playerContext.Stats.AddModifier(modifier);
+                stats.AddModifier(modifier);
             }
 
             foreach (ItemEffect effect in item.ItemEffects)
             {
-                // playerContext.Effects.AddEffect(effect);
+                effects.AddEffect(effect);
             }
         }
         
@@ -254,12 +278,12 @@ namespace Project.Scripts.PlayerScripts
 
             foreach (StatModifier modifier in item.StatModifiers)
             {
-                // playerContext.Stats.RemoveModifier(modifier);
+                stats.RemoveModifier(modifier);
             }
 
             foreach (ItemEffect effect in item.ItemEffects)
             {
-                // playerContext.Effects.RemoveEffect(effect);
+                effects.RemoveEffect(effect);
             }
         }
         
@@ -488,29 +512,6 @@ namespace Project.Scripts.PlayerScripts
             
             EquipmentChanged?.Invoke();
             return skill;
-        }
-        
-        // Инициализация
-        
-        private void Start()
-        {
-            ApplyItem(weaponSlot1);
-            ApplyItem(weaponSlot2);
-
-            ApplyItem(activeSkill);
-
-            ApplyItem(headArmor);
-            ApplyItem(bodyArmor);
-
-            foreach (ArtifactData artifact in artifacts)
-            {
-                ApplyItem(artifact);
-            }
-        }
-
-        private void Awake()
-        {
-            playerContext = GetComponent<PlayerContext>();
         }
     }
 }

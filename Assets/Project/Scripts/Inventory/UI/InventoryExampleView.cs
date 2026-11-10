@@ -30,8 +30,7 @@ namespace Project.Scripts.Inventory.UI
         
         [NonSerialized] public ViewItem item;
     }
-
-    // Visual example only. Supply data from your inventory through the public methods.
+    
     public sealed class InventoryExampleView : MonoBehaviour
     {
         public ViewSlot[] slots;
@@ -82,8 +81,7 @@ namespace Project.Scripts.Inventory.UI
 
         public void Open() { window.gameObject.SetActive(true); }
         public void Close() { window.gameObject.SetActive(false); }
-
-        // Slot order: weapon I, weapon II, active skill, head, body, artifacts I/II/III.
+        
         public void SetSlot(int index, ViewItem item)
         {
             if (slots == null || index < 0 || index >= slots.Length) return;
@@ -119,8 +117,7 @@ namespace Project.Scripts.Inventory.UI
             coinCount.text = coins.ToString();
             arrowCount.text = arrows.ToString();
         }
-
-        // Pass actual remaining/total seconds; this example counts down in unscaled time.
+        
         public void SetSkillCooldown(float secondsRemaining, float totalSeconds)
         {
             duration = Mathf.Max(0.001f, totalSeconds);
@@ -135,7 +132,6 @@ namespace Project.Scripts.Inventory.UI
             cooldownText.text = remaining > 0f ? remaining.ToString("0.0") + " с" : "Готов";
         }
 
-        // Unique items only; square icon buttons without labels or fixed capacity.
         public void SetKeyItems(ViewItem[] items)
         {
             if (!keyContent) return;
@@ -156,8 +152,7 @@ namespace Project.Scripts.Inventory.UI
             }
             keySlots.Clear();
             selectedKeyItemIndex = -1;
-
-            // The grid controls cell positions; the content height is calculated below.
+            
             foreach (LayoutGroup layout in keyContent.GetComponents<LayoutGroup>())
                 if (!(layout is GridLayoutGroup)) layout.enabled = false;
             ContentSizeFitter fitter = keyContent.GetComponent<ContentSizeFitter>();
@@ -195,8 +190,7 @@ namespace Project.Scripts.Inventory.UI
             
             UpdateKeyGridLayout();
             LayoutRebuilder.ForceRebuildLayoutImmediate(keyContent);
-
-            // Preserve selection when the same item instance is still in the collection.
+            
             int restoredIndex =
                 previousItem?.source 
                     ? keySlots.FindIndex(

@@ -1,11 +1,30 @@
+using Project.Scripts.Combat;
+using Project.Scripts.PlayerScripts;
+using Project.Scripts.Stats;
 using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
-    public class MeleeWeaponData: WeaponData
+    public class MeleeWeaponData : WeaponData
     {
-        [SerializeField] private float attackRange;
+        public override StatType DamageStat =>
+            StatType.MeleeDamage;
 
-        public float AttackRange => attackRange;
+        public override bool CanUse(
+            PlayerContext context)
+        {
+            return true;
+        }
+
+        public override bool TryConsumeResources(
+            PlayerContext context)
+        {
+            return true;
+        }
+
+        public override void Attack(WeaponAttackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

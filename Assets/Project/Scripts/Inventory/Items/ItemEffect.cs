@@ -12,9 +12,6 @@ namespace Project.Scripts.Inventory.Items
 
         public string EffectName => effectName;
         
-        public virtual void OnEquip(PlayerContext player) { }
-        public virtual void OnUnequip(PlayerContext player) { }
-
         /// <summary>
         /// Получает правильное описание эффекта для конкретного предмета.
         /// </summary>
@@ -26,5 +23,25 @@ namespace Project.Scripts.Inventory.Items
         {
             return description;
         }
+        
+        public virtual void OnApply(PlayerContext context) { }
+
+        public virtual void OnRemove(PlayerContext context) { }
+
+        public virtual void OnEnemyKilled(PlayerContext context) { }
+        
+        public virtual void OnDamageTaken(
+            PlayerContext context,
+            float damage)
+        {
+        }
+
+        public virtual void OnDamageDealt(
+            PlayerContext context,
+            float damage)
+        {
+        }
+
+        public virtual void OnAttack(PlayerContext context) { }
     }
 }
