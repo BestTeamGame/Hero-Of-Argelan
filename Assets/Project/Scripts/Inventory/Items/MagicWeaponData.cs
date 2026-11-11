@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
+    [CreateAssetMenu(
+        menuName = "Project/Weapons/Magic/Default Magic Weapon",
+        fileName = "DefaultMagicWeapon"
+    )]
     public abstract class MagicWeaponData : WeaponData
     {
         [SerializeField, Min(0f)]

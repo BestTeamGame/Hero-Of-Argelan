@@ -435,14 +435,19 @@ MonoBehaviour:
   headArmor: {fileID: 11400000, guid: 864750bc29844a4c9e10e5fa5469bf01, type: 2}
   bodyArmor: {fileID: 11400000, guid: c4533e93168d4caeaf574ff2f2d9c9be, type: 2}
   artifacts:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 655d969a19d34511a2a45c2e231f19cb, type: 2}
+  - {fileID: 11400000, guid: 655d969a19d34511a2a45c2e231f19cb, type: 2}
   - {fileID: 0}
   healthPotions: 3
   manaPotions: 3
   coins: 0
   arrows: 10
-  keyItems: []
+  keyItems:
+  - {fileID: 11400000, guid: 48437b83430ecb940b7d5441b6b5939b, type: 2}
+  - {fileID: 11400000, guid: 48437b83430ecb940b7d5441b6b5939b, type: 2}
+  - {fileID: 11400000, guid: 48437b83430ecb940b7d5441b6b5939b, type: 2}
+  - {fileID: 11400000, guid: 48437b83430ecb940b7d5441b6b5939b, type: 2}
+  - {fileID: 11400000, guid: 48437b83430ecb940b7d5441b6b5939b, type: 2}
   maxHealthPotions: 5
   maxManaPotions: 5
   maxArrows: 999

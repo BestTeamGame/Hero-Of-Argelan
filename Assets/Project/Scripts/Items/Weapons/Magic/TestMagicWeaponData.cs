@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Project.Scripts.Items.Weapons.Magic
 {
     [CreateAssetMenu(
-        menuName = "Project/Weapons/Test Magic Weapon",
+        menuName = "Project/Weapons/Magic/Test Magic Weapon",
         fileName = "TestMagicWeapon"
     )]
     public sealed class TestMagicWeaponData : MagicWeaponData

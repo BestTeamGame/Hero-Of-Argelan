@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Project.Scripts.Items.Weapons.Ranged
 {
     [CreateAssetMenu(
-        menuName = "Project/Weapons/Test Ranged Weapon",
+        menuName = "Project/Weapons/Ranged/Test Ranged Weapon",
         fileName = "TestRangedWeapon"
     )]
     public sealed class TestRangedWeaponData : RangedWeaponData

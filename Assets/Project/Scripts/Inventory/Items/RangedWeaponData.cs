@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
+    [CreateAssetMenu(
+        menuName = "Project/Weapons/Ranged/Default Ranged Weapon",
+        fileName = "DefaultRangedWeapon"
+    )]
     public abstract class RangedWeaponData : WeaponData
     {
         [SerializeField, Min(1)]

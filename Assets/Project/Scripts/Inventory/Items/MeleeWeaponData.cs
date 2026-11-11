@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
+    [CreateAssetMenu(
+        menuName = "Project/Weapons/Melee/Default Melee Weapon",
+        fileName = "DefaultMeleeWeapon"
+    )]
     public class MeleeWeaponData : WeaponData
     {
         public override StatType DamageStat =>

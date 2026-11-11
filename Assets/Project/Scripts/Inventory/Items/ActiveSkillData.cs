@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Project.Scripts.Inventory.Items
 {
+    [CreateAssetMenu(
+        menuName = "Project/Active Skills/Default Active Skill",
+        fileName = "DefaultActiveSkill"
+    )]
     public abstract class ActiveSkillData : EquippableItemData
     {
         [Header("Skill")]

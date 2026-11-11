@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Project.Scripts.Items.Weapons.Melee
 {
     [CreateAssetMenu(
-        menuName = "Project/Weapons/Test Melee Weapon",
+        menuName = "Project/Weapons/Melee/Test Melee Weapon",
         fileName = "TestMeleeWeapon"
     )]
     public sealed class TestMeleeWeaponData : MeleeWeaponData
