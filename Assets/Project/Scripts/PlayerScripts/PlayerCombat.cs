@@ -1,3 +1,4 @@
+using System.Linq;
 using Project.Scripts.Combat;
 using Project.Scripts.Inventory.Items;
 using Project.Scripts.Stats;
@@ -23,6 +24,10 @@ namespace Project.Scripts.PlayerScripts
         private PlayerHealth health;
         private PlayerCombatEvents combatEvents;
         private Animator animator;
+
+        private WeaponData pendingWeapon;
+        private WeaponAttackContext pendingAttackContext;
+        private bool hasPendingAttack;
 
         private float weapon1NextAttackTime;
         private float weapon2NextAttackTime;
@@ -81,6 +86,9 @@ namespace Project.Scripts.PlayerScripts
             WeaponData weapon,
             ref float nextAttackTime)
         {
+            if (hasPendingAttack)
+                return false;
+
             if (health.IsDead)
                 return false;
 
@@ -110,17 +118,61 @@ namespace Project.Scripts.PlayerScripts
                     damage
                 );
 
-            weapon.Attack(attackContext);
-            
-            if (animator && !string.IsNullOrEmpty(weapon.AttackAnimationTrigger))
+            if (HasAttackAnimation(weapon.AttackAnimationTrigger))
+            {
+                pendingWeapon = weapon;
+                pendingAttackContext = attackContext;
+                hasPendingAttack = true;
                 animator.SetTrigger(weapon.AttackAnimationTrigger);
+            }
+            else
+            {
+                weapon.Attack(attackContext);
+                combatEvents.RaiseAttackPerformed();
+            }
 
             nextAttackTime =
                 GetNextAttackTime(weapon);
 
-            combatEvents.RaiseAttackPerformed();
-
             return true;
+        }
+        
+        public void DealSwordDamage()
+        {
+            PerformPendingAttack();
+        }
+        
+        public void ShootArrow()
+        {
+            PerformPendingAttack();
+        }
+
+        private void PerformPendingAttack()
+        {
+            if (!hasPendingAttack)
+                return;
+
+            WeaponData weapon = pendingWeapon;
+            WeaponAttackContext attackContext = pendingAttackContext;
+
+            hasPendingAttack = false;
+            pendingWeapon = null;
+
+            if (health.IsDead || !weapon)
+                return;
+
+            weapon.Attack(attackContext);
+            combatEvents.RaiseAttackPerformed();
+        }
+
+        private bool HasAttackAnimation(string triggerName)
+        {
+            if (!animator || string.IsNullOrEmpty(triggerName))
+                return false;
+
+            return animator.parameters.Any(parameter =>
+                parameter.type == AnimatorControllerParameterType.Trigger
+                && parameter.name == triggerName);
         }
         
         private float GetNextAttackTime(
