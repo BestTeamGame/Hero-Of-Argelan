@@ -1,4 +1,6 @@
+
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -21,11 +23,13 @@ public class SkeletonEnemy : Enemy
     public float attackCooldown = 1.5f;
 
     [Header("References")]
-    public Transform player;
+    public PlayerContext playerContext;
     public Animator animator;
 
     private Rigidbody2D rb;
     private Collider2D bodyCollider;
+
+    private Transform player;
 
     private float attackTimer;
     private bool isAttacking;
@@ -44,14 +48,11 @@ public class SkeletonEnemy : Enemy
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (player == null)
-        {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+        if (playerContext == null)
+            playerContext = FindFirstObjectByType<PlayerContext>();
 
-            if (playerObject != null)
-                player = playerObject.transform;
-        }
+        if (playerContext != null)
+            player = playerContext.transform;
 
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.freezeRotation = true;
@@ -62,7 +63,7 @@ public class SkeletonEnemy : Enemy
         if (isDead)
             return;
 
-        if (player == null || animator == null)
+        if (playerContext == null || player == null || animator == null)
         {
             StopHorizontalMovement();
             SetIdleAnimation();
@@ -313,7 +314,8 @@ public class SkeletonEnemy : Enemy
     // Animation Event в кадре попадания мечом.
     public void DealDamage()
     {
-        if (isDead || !isAttacking || attackDamageDealt || player == null)
+        if (isDead || !isAttacking || attackDamageDealt ||
+            playerContext == null || player == null)
             return;
 
         if (!IsPlayerOnReachableHeight(player))
@@ -327,21 +329,18 @@ public class SkeletonEnemy : Enemy
         if (distance > attackDistance + 0.3f)
             return;
 
-        Player playerComponent = player.GetComponent<Player>();
+        PlayerHealth health = playerContext.Health;
 
-        if (playerComponent == null)
-            playerComponent = player.GetComponentInParent<Player>();
-
-        if (playerComponent != null)
+        if (health != null)
         {
-            playerComponent.TakeDamage(attackDamage);
+            health.TakeDamage(attackDamage);
             attackDamageDealt = true;
 
             Debug.Log("Скелет наносит игроку урон: " + attackDamage);
         }
         else
         {
-            Debug.LogWarning("Player не найден!");
+            Debug.LogWarning("PlayerHealth не найден в PlayerContext!");
         }
     }
 

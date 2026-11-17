@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -63,8 +64,7 @@ public class GoblinBomb : MonoBehaviour
         Vector2 start = transform.position;
         Vector2 end = target.position;
 
-        // ƒобавл€ем погрешность, чтобы бомбы не летели
-        // каждый раз точно в одну и ту же точку.
+        // ƒобавл€ем погрешность точки приземлени€.
         end.x += Random.Range(
             -horizontalAccuracy,
             horizontalAccuracy
@@ -76,7 +76,6 @@ public class GoblinBomb : MonoBehaviour
         );
 
         // ¬ычисл€ем траекторию один раз.
-        // ѕосле броска движение игрока уже не вли€ет на бомбу.
         float gravity = Mathf.Abs(
             Physics2D.gravity.y * rb.gravityScale
         );
@@ -93,10 +92,9 @@ public class GoblinBomb : MonoBehaviour
         float timeDown = Mathf.Sqrt(2f * heightDown / gravity);
         float flightTime = timeUp + timeDown;
 
-        // –ассчитываем горизонтальную скорость до выбранной точки.
+        // –ассчитываем горизонтальную скорость.
         float velocityX = (end.x - start.x) / flightTime;
 
-        // ƒополнительна€ случайна€ погрешность скорости по горизонтали.
         velocityX += Random.Range(-0.6f, 0.6f);
 
         rb.linearVelocity = new Vector2(velocityX, velocityY);
@@ -137,19 +135,20 @@ public class GoblinBomb : MonoBehaviour
         if (target == null)
             return;
 
-        Player playerComponent = target.GetComponentInParent<Player>();
+        PlayerContext context =
+            target.GetComponentInParent<PlayerContext>();
 
-        if (playerComponent == null)
-            playerComponent = target.GetComponentInChildren<Player>();
+        if (context == null)
+            context = target.GetComponentInChildren<PlayerContext>();
 
-        if (playerComponent == null)
+        if (context == null)
             return;
 
         Collider2D[] bombColliders =
             GetComponentsInChildren<Collider2D>();
 
         Collider2D[] playerColliders =
-            playerComponent.GetComponentsInChildren<Collider2D>();
+            context.GetComponentsInChildren<Collider2D>();
 
         foreach (Collider2D bombCol in bombColliders)
         {
@@ -165,15 +164,24 @@ public class GoblinBomb : MonoBehaviour
         }
     }
 
-    private bool IsPlayer(Collider2D other)
+    private PlayerContext GetPlayerContext(Collider2D other)
     {
         if (other == null)
-            return false;
+            return null;
 
-        if (other.CompareTag("Player"))
-            return true;
+        PlayerContext context =
+            other.GetComponentInParent<PlayerContext>();
 
-        return other.GetComponentInParent<Player>() != null;
+        if (context == null)
+            context = other.GetComponentInChildren<PlayerContext>();
+
+        return context;
+    }
+
+    private bool IsPlayer(Collider2D other)
+    {
+        return GetPlayerContext(other) != null ||
+               (other != null && other.CompareTag("Player"));
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -244,21 +252,24 @@ public class GoblinBomb : MonoBehaviour
             explosionRadius
         );
 
-        HashSet<Player> damagedPlayers = new HashSet<Player>();
+        HashSet<PlayerContext> damagedPlayers =
+            new HashSet<PlayerContext>();
 
         foreach (Collider2D hit in hits)
         {
             if (hit == null)
                 continue;
 
-            Player playerComponent =
-                hit.GetComponentInParent<Player>();
+            PlayerContext context = GetPlayerContext(hit);
 
-            if (playerComponent == null)
+            if (context == null)
                 continue;
 
-            if (damagedPlayers.Add(playerComponent))
-                playerComponent.TakeDamage(damage);
+            if (context.Health != null &&
+                damagedPlayers.Add(context))
+            {
+                context.Health.TakeDamage(damage);
+            }
         }
     }
 

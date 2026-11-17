@@ -1,5 +1,6 @@
 
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +24,7 @@ public class ReaperBoss : Enemy
     public float attackCooldown = 2f;
 
     [Header("References")]
-    public Transform player;
+    public PlayerContext playerContext;
     public Animator animator;
     public Slider healthSlider;
 
@@ -33,6 +34,8 @@ public class ReaperBoss : Enemy
 
     private Rigidbody2D rb;
     private Collider2D bodyCollider;
+
+    private Transform player;
 
     private float attackTimer;
     private bool isAttacking;
@@ -50,14 +53,11 @@ public class ReaperBoss : Enemy
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (player == null)
-        {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+        if (playerContext == null)
+            playerContext = FindFirstObjectByType<PlayerContext>();
 
-            if (playerObject != null)
-                player = playerObject.transform;
-        }
+        if (playerContext != null)
+            player = playerContext.transform;
 
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.freezeRotation = true;
@@ -70,7 +70,7 @@ public class ReaperBoss : Enemy
         if (isDead)
             return;
 
-        if (player == null || animator == null)
+        if (playerContext == null || player == null || animator == null)
         {
             StopHorizontalMovement();
             SetWalkingAnimation(false);
@@ -94,8 +94,7 @@ public class ReaperBoss : Enemy
             return;
         }
 
-        // Жнец не преследует игрока, если тот находится
-        // слишком высоко или низко относительно босса.
+        // Жнец не преследует игрока на другой высоте.
         if (!IsPlayerOnReachableHeight(player))
         {
             StopHorizontalMovement();
@@ -183,7 +182,6 @@ public class ReaperBoss : Enemy
         if (groundCheck == null)
             return true;
 
-        // Проверяем наличие платформы немного впереди ног.
         Vector2 origin = (Vector2)groundCheck.position +
             Vector2.right * facingDirection * edgeCheckDistance;
 
@@ -319,7 +317,8 @@ public class ReaperBoss : Enemy
     // Animation Event в кадре попадания оружия.
     public void DealDamage()
     {
-        if (isDead || !isAttacking || player == null)
+        if (isDead || !isAttacking ||
+            playerContext == null || player == null)
             return;
 
         if (!IsPlayerOnReachableHeight(player))
@@ -333,20 +332,27 @@ public class ReaperBoss : Enemy
         if (distance > attackDistance + 0.3f)
             return;
 
-        Player playerComponent = player.GetComponent<Player>();
+        PlayerHealth health = playerContext.Health;
 
-        if (playerComponent == null)
-            playerComponent = player.GetComponentInParent<Player>();
-
-        if (playerComponent != null)
+        if (health != null)
         {
             Debug.Log("Reaper наносит игроку урон: " + attackDamage);
-            playerComponent.TakeDamage(attackDamage);
+            health.TakeDamage(attackDamage);
         }
         else
         {
-            Debug.LogWarning("Player не найден!");
+            Debug.LogWarning("PlayerHealth не найден в PlayerContext!");
         }
+    }
+
+    private bool IsPlayerOnReachableHeight(Transform target)
+    {
+        if (target == null)
+            return false;
+
+        return Mathf.Abs(
+            target.position.y - transform.position.y
+        ) < 1.5f;
     }
 
     private void UpdateHealthBar()

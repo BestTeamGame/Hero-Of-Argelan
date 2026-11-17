@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 59863790434206999}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: -0.08, z: 0}
+  m_LocalPosition: {x: 0, y: -0.073, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -162,8 +162,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.009337515, y: 0.43567157}
-  m_Size: {x: 0.7065986, y: 0.80032015}
+  m_Offset: {x: 0.009337515, y: 0.39250803}
+  m_Size: {x: 0.7065986, y: 0.8866472}
   m_Direction: 0
 --- !u!50 &2204675123389174733
 Rigidbody2D:
@@ -231,14 +231,14 @@ MonoBehaviour:
   moveSpeed: 2
   detectionDistance: 7
   attackDistance: 1.5
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 6825880828915647677}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  groundCheckDistance: 0.3
-  edgeCheckDistance: 0.3
-  wallCheckDistance: 0.2
+    m_Bits: 8
+  groundCheckDistance: 1
+  edgeCheckDistance: 1
+  wallCheckDistance: 1
   attackDamage: 20
   attackCooldown: 1.5
-  player: {fileID: 0}
+  playerContext: {fileID: 0}
   animator: {fileID: 10770336014559664}
