@@ -1,5 +1,6 @@
 
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -22,8 +23,10 @@ public class OrcEnemy : Enemy
     public float attackCooldown = 1.5f;
 
     [Header("References")]
-    public Transform player;
+    public PlayerContext playerContext;
     public Animator animator;
+
+    private Transform player;
 
     private Rigidbody2D rb;
     private Collider2D bodyCollider;
@@ -44,14 +47,11 @@ public class OrcEnemy : Enemy
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (player == null)
-        {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+        if (playerContext == null)
+            playerContext = FindFirstObjectByType<PlayerContext>();
 
-            if (playerObject != null)
-                player = playerObject.transform;
-        }
+        if (playerContext != null)
+            player = playerContext.transform;
 
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.freezeRotation = true;
@@ -62,7 +62,7 @@ public class OrcEnemy : Enemy
         if (isDead)
             return;
 
-        if (player == null || animator == null)
+        if (playerContext == null || player == null || animator == null)
         {
             StopHorizontalMovement();
             SetIdleAnimation();
@@ -123,7 +123,7 @@ public class OrcEnemy : Enemy
             player.position
         );
 
-        // Повторно проверяем условия непосредственно перед движением.
+        // Повторно проверяем условия перед движением.
         if (distance > detectionDistance ||
             distance <= attackDistance ||
             !IsPlayerOnReachableHeight(player) ||
@@ -175,7 +175,6 @@ public class OrcEnemy : Enemy
         if (groundCheck == null)
             return true;
 
-   
         Vector2 origin = (Vector2)groundCheck.position +
             Vector2.right * facingDirection * edgeCheckDistance;
 
@@ -320,10 +319,11 @@ public class OrcEnemy : Enemy
         isAttacking = false;
     }
 
-
+    // Animation Event в кадре попадания.
     public void DealDamage()
     {
-        if (isDead || !isAttacking || player == null)
+        if (isDead || !isAttacking ||
+            playerContext == null || player == null)
             return;
 
         if (!IsPlayerOnReachableHeight(player))
@@ -337,19 +337,26 @@ public class OrcEnemy : Enemy
         if (distance > attackDistance + 0.3f)
             return;
 
-        Player playerComponent = player.GetComponent<Player>();
+        PlayerHealth health = playerContext.Health;
 
-        if (playerComponent == null)
-            playerComponent = player.GetComponentInParent<Player>();
-
-        if (playerComponent != null)
+        if (health != null)
         {
             Debug.Log("Орк наносит игроку урон: " + attackDamage);
-            playerComponent.TakeDamage(attackDamage);
+            health.TakeDamage(attackDamage);
         }
         else
         {
-            Debug.LogWarning("Player не найден!");
+            Debug.LogWarning("PlayerHealth не найден в PlayerContext!");
         }
+    }
+
+    private bool IsPlayerOnReachableHeight(Transform target)
+    {
+        if (target == null)
+            return false;
+
+        return Mathf.Abs(
+            target.position.y - transform.position.y
+        ) < 1.5f;
     }
 }

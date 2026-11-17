@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -14,6 +15,12 @@ public class GoblinBomb : MonoBehaviour
     public float throwForce = 7f;
     public float arcHeight = 3f;
     public float gravityScale = 1.2f;
+
+    [Tooltip("Случайное отклонение точки приземления по горизонтали")]
+    public float horizontalAccuracy = 1.2f;
+
+    [Tooltip("Случайное отклонение точки приземления по высоте")]
+    public float verticalAccuracy = 0.4f;
 
     [Header("Взрыв")]
     public float explosionDuration = 0.6f;
@@ -40,6 +47,9 @@ public class GoblinBomb : MonoBehaviour
         if (target == null || rb == null)
             return;
 
+        exploded = false;
+        damageApplied = false;
+
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.simulated = true;
         rb.gravityScale = gravityScale;
@@ -50,9 +60,22 @@ public class GoblinBomb : MonoBehaviour
         IgnoreOwnerCollisions();
         IgnorePlayerCollisions(target);
 
+        // Запоминаем положение игрока только в момент броска.
         Vector2 start = transform.position;
         Vector2 end = target.position;
 
+        // Добавляем погрешность точки приземления.
+        end.x += Random.Range(
+            -horizontalAccuracy,
+            horizontalAccuracy
+        );
+
+        end.y += Random.Range(
+            -verticalAccuracy,
+            verticalAccuracy
+        );
+
+        // Вычисляем траекторию один раз.
         float gravity = Mathf.Abs(
             Physics2D.gravity.y * rb.gravityScale
         );
@@ -69,12 +92,16 @@ public class GoblinBomb : MonoBehaviour
         float timeDown = Mathf.Sqrt(2f * heightDown / gravity);
         float flightTime = timeUp + timeDown;
 
+        // Рассчитываем горизонтальную скорость.
         float velocityX = (end.x - start.x) / flightTime;
+
+        velocityX += Random.Range(-0.6f, 0.6f);
 
         rb.linearVelocity = new Vector2(velocityX, velocityY);
 
+        // Разворачиваем спрайт в сторону броска.
         Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(end.x - start.x);
+        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(velocityX);
         transform.localScale = scale;
     }
 
@@ -108,19 +135,20 @@ public class GoblinBomb : MonoBehaviour
         if (target == null)
             return;
 
-        Player playerComponent = target.GetComponentInParent<Player>();
+        PlayerContext context =
+            target.GetComponentInParent<PlayerContext>();
 
-        if (playerComponent == null)
-            playerComponent = target.GetComponentInChildren<Player>();
+        if (context == null)
+            context = target.GetComponentInChildren<PlayerContext>();
 
-        if (playerComponent == null)
+        if (context == null)
             return;
 
         Collider2D[] bombColliders =
             GetComponentsInChildren<Collider2D>();
 
         Collider2D[] playerColliders =
-            playerComponent.GetComponentsInChildren<Collider2D>();
+            context.GetComponentsInChildren<Collider2D>();
 
         foreach (Collider2D bombCol in bombColliders)
         {
@@ -136,15 +164,24 @@ public class GoblinBomb : MonoBehaviour
         }
     }
 
-    private bool IsPlayer(Collider2D other)
+    private PlayerContext GetPlayerContext(Collider2D other)
     {
         if (other == null)
-            return false;
+            return null;
 
-        if (other.CompareTag("Player"))
-            return true;
+        PlayerContext context =
+            other.GetComponentInParent<PlayerContext>();
 
-        return other.GetComponentInParent<Player>() != null;
+        if (context == null)
+            context = other.GetComponentInChildren<PlayerContext>();
+
+        return context;
+    }
+
+    private bool IsPlayer(Collider2D other)
+    {
+        return GetPlayerContext(other) != null ||
+               (other != null && other.CompareTag("Player"));
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -162,17 +199,15 @@ public class GoblinBomb : MonoBehaviour
         if (exploded || other == null)
             return;
 
-        // При касании игрока бомба не наносит урон
-        // и не запускает взрыв.
+        // При касании игрока не взрываем бомбу.
         if (IsPlayer(other))
             return;
 
-        // Не взрываемся при столкновении с самим гоблином.
+        // Игнорируем столкновения с гоблином.
         if (owner != null &&
             other.GetComponentInParent<GoblinEnemy>() == owner)
             return;
 
-        // Остальные столкновения запускают анимацию взрыва.
         Explode();
     }
 
@@ -199,16 +234,12 @@ public class GoblinBomb : MonoBehaviour
         }
 
         if (animator != null)
-        {
             animator.SetTrigger("Explode");
-        }
 
-        // Урон здесь НЕ наносится.
-        // Его нанесёт Animation Event.
+        // Уничтожаем бомбу после завершения анимации.
         Destroy(gameObject, explosionDuration);
     }
 
-    // Добавить как Animation Event на кадр взрыва.
     public void DealExplosionDamage()
     {
         if (!exploded || damageApplied)
@@ -221,22 +252,23 @@ public class GoblinBomb : MonoBehaviour
             explosionRadius
         );
 
-        HashSet<Player> damagedPlayers = new HashSet<Player>();
+        HashSet<PlayerContext> damagedPlayers =
+            new HashSet<PlayerContext>();
 
         foreach (Collider2D hit in hits)
         {
             if (hit == null)
                 continue;
 
-            Player playerComponent =
-                hit.GetComponentInParent<Player>();
+            PlayerContext context = GetPlayerContext(hit);
 
-            if (playerComponent == null)
+            if (context == null)
                 continue;
 
-            if (damagedPlayers.Add(playerComponent))
+            if (context.Health != null &&
+                damagedPlayers.Add(context))
             {
-                playerComponent.TakeDamage(damage);
+                context.Health.TakeDamage(damage);
             }
         }
     }

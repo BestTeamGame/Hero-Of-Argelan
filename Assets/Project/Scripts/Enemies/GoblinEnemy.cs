@@ -1,5 +1,6 @@
 
 using Project.Scripts;
+using Project.Scripts.PlayerScripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -29,8 +30,10 @@ public class GoblinEnemy : Enemy
     public float bombThrowForce = 7f;
 
     [Header("References")]
-    public Transform player;
+    public PlayerContext playerContext;
     public Animator animator;
+
+    private Transform player;
 
     private Rigidbody2D rb;
     private Collider2D bodyCollider;
@@ -55,14 +58,11 @@ public class GoblinEnemy : Enemy
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (player == null)
-        {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+        if (playerContext == null)
+            playerContext = FindFirstObjectByType<PlayerContext>();
 
-            if (playerObject != null)
-                player = playerObject.transform;
-        }
+        if (playerContext != null)
+            player = playerContext.transform;
 
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.freezeRotation = true;
@@ -76,7 +76,7 @@ public class GoblinEnemy : Enemy
         daggerTimer -= Time.deltaTime;
         bombTimer -= Time.deltaTime;
 
-        if (player == null || animator == null)
+        if (playerContext == null || player == null || animator == null)
         {
             SetIdle();
             return;
@@ -217,7 +217,6 @@ public class GoblinEnemy : Enemy
         if (groundCheck == null)
             return true;
 
-        // Проверяем пол немного впереди ног по направлению движения.
         Vector2 origin = (Vector2)groundCheck.position +
             Vector2.right * facingDirection * edgeCheckDistance;
 
@@ -280,7 +279,6 @@ public class GoblinEnemy : Enemy
         else if (directionX < -0.05f)
             facingDirection = -1;
 
-
         Vector3 scale = transform.localScale;
         scale.x = Mathf.Abs(scale.x) * facingDirection;
         transform.localScale = scale;
@@ -325,7 +323,8 @@ public class GoblinEnemy : Enemy
     // Вызывается Animation Event в кадре удара кинжалом.
     public void DealDaggerDamage()
     {
-        if (isDead || !isAttacking || daggerDamageDealt || player == null)
+        if (isDead || !isAttacking || daggerDamageDealt ||
+            playerContext == null || player == null)
             return;
 
         if (!IsPlayerOnReachableHeight(player))
@@ -339,12 +338,11 @@ public class GoblinEnemy : Enemy
         if (distance > daggerDistance + 0.3f)
             return;
 
-        Player playerComponent =
-            player.GetComponentInParent<Player>();
+        PlayerHealth health = playerContext.Health;
 
-        if (playerComponent != null)
+        if (health != null)
         {
-            playerComponent.TakeDamage(daggerDamage);
+            health.TakeDamage(daggerDamage);
             daggerDamageDealt = true;
         }
     }
@@ -404,11 +402,14 @@ public class GoblinEnemy : Enemy
 
         StopHorizontalMovement();
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Idle", false);
-        animator.ResetTrigger("Attack");
-        animator.ResetTrigger("Attack2");
-        animator.SetTrigger("TakeHit");
+        if (animator != null)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("Idle", false);
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("Attack2");
+            animator.SetTrigger("TakeHit");
+        }
 
         CancelInvoke(nameof(EndHurt));
         Invoke(nameof(EndHurt), 0.5f);
@@ -450,5 +451,15 @@ public class GoblinEnemy : Enemy
         }
 
         Destroy(gameObject, 2f);
+    }
+
+    private bool IsPlayerOnReachableHeight(Transform target)
+    {
+        if (target == null)
+            return false;
+
+        return Mathf.Abs(
+            target.position.y - transform.position.y
+        ) < 1.5f;
     }
 }
